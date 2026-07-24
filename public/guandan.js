@@ -155,7 +155,7 @@ export function classify(cards, rankCard) {
     const suits = new Set(nonJokerFixed.map(suitOf));
     if (suits.size === 1) {
       const top = fitRun(fixedRanks, w, 5, 1);
-      if (top !== null) return result('straightFlush', top, `Straight flush to ${labelRank(runTopRank(top))}`);
+      if (top !== null) return result('tongHuaShun', top, `Tong Hua Shun to ${labelRank(runTopRank(top))}`);
     }
   }
 
@@ -168,13 +168,13 @@ export function classify(cards, rankCard) {
   // --- Tube 木板 (3 consecutive pairs, 6 cards) ---
   if (jokerFree && n === 6) {
     const top = fitRun(fixedRanks, w, 3, 2);
-    if (top !== null) return result('tube', top, `Tube to ${labelRank(runTopRank(top))}`);
+    if (top !== null) return result('tractor', top, `Tractor to ${labelRank(runTopRank(top))}`);
   }
 
   // --- Plate 钢板 (2 consecutive triples, 6 cards) ---
   if (jokerFree && n === 6) {
     const top = fitRun(fixedRanks, w, 2, 3);
-    if (top !== null) return result('plate', top, `Plate to ${labelRank(runTopRank(top))}`);
+    if (top !== null) return result('steelBoard', top, `Steel Board to ${labelRank(runTopRank(top))}`);
   }
 
   // --- Full house 三带二 (triple + pair) ---
@@ -182,14 +182,14 @@ export function classify(cards, rankCard) {
     const c = counts(fixedRanks);
     const entries = [...c.entries()].sort((a, b) => b[1] - a[1]);
     if (w === 0 && entries.length === 2 && entries[0][1] === 3 && entries[1][1] === 2) {
-      return result('fullHouse', valOf(entries[0][0]), `Full house, ${labelRank(entries[0][0])} over ${labelRank(entries[1][0])}`);
+      return result('hung', valOf(entries[0][0]), `Hung, ${labelRank(entries[0][0])} over ${labelRank(entries[1][0])}`);
     }
     if (w === 1 && entries.length === 2) {
       // Wildcard fills either the triple or the pair.
       const [a, b] = entries;
       if ((a[1] === 3 && b[1] === 1) || (a[1] === 2 && b[1] === 2)) {
         const tripleRank = a[1] === 3 ? a[0] : a[0];
-        return result('fullHouse', valOf(tripleRank), `Full house, ${labelRank(tripleRank)} over ${labelRank(b[0])}`);
+        return result('hung', valOf(tripleRank), `Hung, ${labelRank(tripleRank)} over ${labelRank(b[0])}`);
       }
     }
   }
@@ -198,8 +198,8 @@ export function classify(cards, rankCard) {
 }
 
 export function labelRank(r) {
-  if (r === 'BJ') return 'Black Joker';
-  if (r === 'RJ') return 'Red Joker';
+  if (r === 'BJ') return 'Small Joker';
+  if (r === 'RJ') return 'Big Joker';
   if (r === 'T') return '10';
   return r;
 }
@@ -208,16 +208,20 @@ export const COMBO_LABELS = {
   single: 'Single',
   pair: 'Pair',
   triple: 'Triple',
-  fullHouse: 'Full house',
+  hung: 'Hung',
   straight: 'Straight',
-  straightFlush: 'Straight flush',
-  tube: 'Tube (3 pairs)',
-  plate: 'Plate (2 triples)',
+  tongHuaShun: 'Tong Hua Shun',
+  tractor: 'Tractor',
+  steelBoard: 'Steel Board',
   bomb4: '4-bomb',
   bomb5: '5-bomb',
   bomb6: '6-bomb',
   bomb7: '7-bomb',
   bomb8: '8-bomb',
+  bomb9: '9-bomb',
+  bomb10: '10-bomb',
+  bomb11: '11-bomb',
+  bomb12: '12-bomb',
   jokerBomb: 'Joker bomb',
   unknown: 'Unknown',
 };

@@ -25,11 +25,42 @@ import pandas as pd
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 GAMES_DIR = DATA_DIR / "games"
 
-# Ordering used for comboRank on straights/tubes/plates. Singles/pairs/triples/
-# bombs use card value instead, where the rank card sits at 15 and jokers 16-17.
+# Ordering used for comboRank on straights/tractors/steel-boards. Singles/pairs/
+# triples/bombs use card value instead (rank card 14, jokers 15-16 — see below).
 RANK_ORDER = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
 
-BOMB_COMBOS = {"bomb4", "bomb5", "bomb6", "bomb7", "bomb8", "jokerBomb", "straightFlush"}
+# Every N-bomb up to 12, plus joker bomb and Tong Hua Shun (a suited bomb).
+BOMB_COMBOS = {f"bomb{n}" for n in range(4, 13)} | {"jokerBomb", "tongHuaShun"}
+
+# Base numeric value of a card rank, suit-independent, matching the JS
+# cardValue() scheme so this agrees with the stored comboRank:
+#   2..A -> 2..14,  rank card -> 15,  small joker -> 16,  big joker -> 17.
+_BASE_VALUE = {r: i + 2 for i, r in enumerate(RANK_ORDER)}  # '2'->2 ... 'A'->14
+_BASE_VALUE["BJ"] = 16  # small joker
+_BASE_VALUE["RJ"] = 17  # big joker
+
+
+def card_rank_str(card: str) -> str:
+    """Rank portion of a card code: 'S4' -> '4', 'BJ' -> 'BJ'."""
+    return card if card in ("BJ", "RJ") else card[1:]
+
+
+def card_suit(card: str):
+    """Suit letter, or None for jokers. 'S4' -> 'S', 'RJ' -> None."""
+    return None if card in ("BJ", "RJ") else card[0]
+
+
+def card_value(card: str, rank_card: str | None = None) -> int:
+    """Integer value of a card, matching the in-game strength order.
+
+    2..A map to 2..14. If ``rank_card`` is given, a card of that rank jumps to 15
+    (above ace, below the jokers at 16/17). Pass ``rank_card=None`` to get the
+    plain face value ignoring the wildcard bump.
+    """
+    r = card_rank_str(card)
+    if rank_card is not None and r == rank_card:
+        return 15
+    return _BASE_VALUE[r]
 
 
 def load_games(data_dir: Path | str | None = None) -> list[dict]:
@@ -57,11 +88,15 @@ def load_turns(data_dir: Path | str | None = None) -> pd.DataFrame:
             for turn in player.get("turns", []):
                 cards = turn.get("cards", [])
                 wilds = turn.get("usedWildcards", [])
+                rank_card = str(game["rankCard"])
                 rows.append(
                     {
                         "game_id": game["gameId"],
+                        "game_no": game.get("gameNo"),
+                        "date": game.get("date"),
                         "player_count": game["playerCount"],
-                        "rank_card": game["rankCard"],
+                        "rank_card": rank_card,
+                        "rank_card_value": _BASE_VALUE.get(rank_card),
                         "started_at": game.get("startedAt"),
                         "seat": player["seat"],
                         "name": player["name"],
@@ -81,17 +116,33 @@ def load_turns(data_dir: Path | str | None = None) -> pd.DataFrame:
     df = pd.DataFrame(rows)
     if not df.empty:
         df["started_at"] = pd.to_datetime(df["started_at"], errors="coerce")
+        df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
         df["combo"] = df["combo"].astype("category")
         df["name"] = df["name"].astype("category")
     return df
 
 
 def explode_cards(df: pd.DataFrame) -> pd.DataFrame:
-    """One row per individual card played — for per-card frequency analysis."""
+    """One row per individual card played — for per-card frequency analysis.
+
+    Adds integer/analysis-friendly columns derived from the raw card code:
+      suit        — 'S'/'H'/'D'/'C', or NaN for jokers
+      card_rank   — rank string ('4', 'T', 'BJ', ...)
+      value       — integer face value 2..14 (jokers 16/17), ignoring wildcard
+      game_value  — integer value WITH the game's rank card bumped to 15
+    """
     plays = df[~df["is_pass"]].explode("cards").rename(columns={"cards": "card"})
     plays = plays[plays["card"].notna()].copy()
-    plays["suit"] = plays["card"].str[0].where(~plays["card"].isin(["BJ", "RJ"]))
-    plays["card_rank"] = plays["card"].str[1:].where(~plays["card"].isin(["BJ", "RJ"]), plays["card"])
+    plays["suit"] = plays["card"].map(card_suit)
+    plays["card_rank"] = plays["card"].map(card_rank_str)
+    plays["value"] = plays["card"].map(lambda c: card_value(c, None))
+    plays["game_value"] = plays.apply(
+        lambda row: card_value(row["card"], row["rank_card"]), axis=1
+    )
+    plays["is_wildcard"] = plays.apply(
+        lambda row: card_suit(row["card"]) == "H" and card_rank_str(row["card"]) == row["rank_card"],
+        axis=1,
+    )
     return plays
 
 

@@ -18,8 +18,33 @@ const GAMES_DIR = path.join(DATA_DIR, 'games');
 const JSONL_PATH = path.join(DATA_DIR, 'turns.jsonl');
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_REPO = process.env.GITHUB_REPO; // "owner/repo"
-const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
+// Collected games live on a dedicated DATA BRANCH of this same repo, so the code
+// history on main stays free of "Add game" commits. Defaults target this repo;
+// override with env vars if you fork or rename.
+const GITHUB_REPO = process.env.GITHUB_REPO || 'davidtaili88/guandan-data-collector';
+const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'data';
+
+// ---- Manual counter override ------------------------------------------------
+// The nth game of a variant is normally counted from the data repo automatically
+// (see nextGameNumber). If that count is ever wrong — e.g. files were deleted, or
+// you want to start a fresh series — force the starting n here, or set the
+// GAMENO_OVERRIDE env var as "4:12,6:3" meaning "next 4-player game is 4.12,
+// next 6-player is 6.3". Local edits here win over the env var.
+const GAMENO_OVERRIDE = {
+  // 4: 12,   // uncomment to force the next 4-player game to be 4.12
+  // 6: 3,
+};
+
+function parseEnvOverride() {
+  const raw = process.env.GAMENO_OVERRIDE;
+  if (!raw) return {};
+  const out = {};
+  for (const part of raw.split(',')) {
+    const [variant, n] = part.split(':').map((s) => Number(s.trim()));
+    if (variant && n) out[variant] = n;
+  }
+  return out;
+}
 
 export function githubEnabled() {
   return Boolean(GITHUB_TOKEN && GITHUB_REPO);
@@ -29,9 +54,76 @@ async function ensureDirs() {
   await fs.mkdir(GAMES_DIR, { recursive: true });
 }
 
+// Resolve the next sequence number n for a variant (4 or 6), producing "4.n".
+// Priority: manual override (local const, then env var) > count from GitHub data
+// repo > count from local disk. The data repo is authoritative because Render's
+// local disk is wiped on redeploy.
+async function nextGameNumber(playerCount) {
+  const override = { ...parseEnvOverride(), ...GAMENO_OVERRIDE };
+  if (override[playerCount]) {
+    // Override sets the exact n to use for THIS game; bump it so a second game
+    // in the same process doesn't collide.
+    const n = override[playerCount];
+    GAMENO_OVERRIDE[playerCount] = n + 1;
+    return n;
+  }
+
+  let existing = 0;
+  if (githubEnabled()) {
+    try {
+      existing = await countVariantInGithub(playerCount);
+    } catch {
+      existing = await countVariantLocal(playerCount); // fall back if API fails
+    }
+  } else {
+    existing = await countVariantLocal(playerCount);
+  }
+  return existing + 1;
+}
+
+async function countVariantLocal(playerCount) {
+  await ensureDirs();
+  const files = await fs.readdir(GAMES_DIR);
+  return files.filter((f) => f.startsWith(`${playerCount}.`) && f.endsWith('.json')).length;
+}
+
+async function countVariantInGithub(playerCount) {
+  const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/games?ref=${GITHUB_BRANCH}`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      Accept: 'application/vnd.github+json',
+      'User-Agent': 'guandan-data-collector',
+    },
+  });
+  if (res.status === 404) return 0; // games/ folder doesn't exist yet
+  if (!res.ok) throw new Error(`GitHub list ${res.status}`);
+  const items = await res.json();
+  return items.filter(
+    (it) => it.type === 'file' && it.name.startsWith(`${playerCount}.`) && it.name.endsWith('.json'),
+  ).length;
+}
+
 export async function saveGame(game) {
   await ensureDirs();
-  const file = path.join(GAMES_DIR, `${game.gameId}.json`);
+
+  // Assign the variant sequence number: "4.n" or "6.n". gameId (a timestamp)
+  // remains the collision-proof unique key; gameNo is the human-friendly label
+  // and the filename. If two games race, gameNo could duplicate but the file
+  // still gets a distinct name via a "-<suffix>" from the timestamp.
+  const n = await nextGameNumber(game.playerCount);
+  game.gameNo = `${game.playerCount}.${n}`;
+
+  // Filename is the gameNo; append a short timestamp suffix only if that name is
+  // already taken locally, so a bad count can't silently overwrite a prior game.
+  let baseName = game.gameNo;
+  let file = path.join(GAMES_DIR, `${baseName}.json`);
+  if (await exists(file)) {
+    baseName = `${game.gameNo}-${game.gameId.slice(-4)}`;
+    file = path.join(GAMES_DIR, `${baseName}.json`);
+  }
+  game.fileName = `${baseName}.json`;
+
   const json = JSON.stringify(game, null, 2);
   await fs.writeFile(file, json, 'utf8');
 
@@ -41,8 +133,10 @@ export async function saveGame(game) {
     for (const t of p.turns) {
       lines.push(JSON.stringify({
         gameId: game.gameId,
+        gameNo: game.gameNo,
         playerCount: game.playerCount,
         rankCard: game.rankCard,
+        startedAt: game.startedAt,
         seat: p.seat,
         name: p.name,
         ...t,
@@ -54,16 +148,20 @@ export async function saveGame(game) {
   let github = null;
   if (githubEnabled()) {
     try {
-      github = await pushToGithub(game, json);
+      github = await pushToGithub(game, json, baseName);
     } catch (err) {
       github = { ok: false, error: err.message };
     }
   }
-  return { file, turnCount: lines.length, github };
+  return { file, gameNo: game.gameNo, turnCount: lines.length, github };
 }
 
-async function pushToGithub(game, json) {
-  const repoPath = `games/${game.gameId}.json`;
+async function exists(p) {
+  try { await fs.access(p); return true; } catch { return false; }
+}
+
+async function pushToGithub(game, json, baseName) {
+  const repoPath = `games/${baseName}.json`;
   const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${repoPath}`;
   const headers = {
     Authorization: `Bearer ${GITHUB_TOKEN}`,
@@ -81,7 +179,7 @@ async function pushToGithub(game, json) {
     method: 'PUT',
     headers: { ...headers, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      message: `Add game ${game.gameId} (${game.playerCount}p, rank ${game.rankCard})`,
+      message: `Add game ${game.gameNo} (${game.playerCount}p, rank ${game.rankCard})`,
       content: Buffer.from(json, 'utf8').toString('base64'),
       branch: GITHUB_BRANCH,
       ...(sha ? { sha } : {}),

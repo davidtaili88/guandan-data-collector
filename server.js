@@ -83,6 +83,7 @@ function snapshotGame(room) {
     gameId: room.gameId,
     playerCount: room.settings.playerCount,
     rankCard: room.settings.rankCard,
+    date: room.startedAt.slice(0, 10), // YYYY-MM-DD, for easy grouping/filtering
     startedAt: room.startedAt,
     endedAt: new Date().toISOString(),
     players: Object.values(room.players)
@@ -182,7 +183,7 @@ io.on('connection', (socket) => {
     }
     try {
       const res = await saveGame(game);
-      let msg = `Saved ${game.gameId} — ${res.turnCount} turns`;
+      let msg = `Saved game ${res.gameNo} — ${res.turnCount} turns`;
       if (res.github?.ok) msg += ' · pushed to GitHub';
       else if (res.github?.error) msg += ` · GitHub failed: ${res.github.error}`;
       io.to(roomId).emit('toast', msg);

@@ -3,6 +3,9 @@
 Web UI for recording every hand played in games of Guandan (掼蛋), so the data can
 be analysed later in Python.
 
+
+git token: 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
+
 ## Running
 
 ```bash
@@ -36,8 +39,10 @@ means tricks can't be reconstructed across players.
 ```json
 {
   "gameId": "2026-07-24T01-58-23-p7hn",
+  "gameNo": "4.7",
   "playerCount": 4,
   "rankCard": "7",
+  "date": "2026-07-24",
   "startedAt": "...", "endedAt": "...",
   "players": [
     {
@@ -55,23 +60,46 @@ means tricks can't be reconstructed across players.
 }
 ```
 
-Card codes: suit (`S H D C`) + rank (`2`–`9`, `T J Q K A`), plus `BJ` / `RJ` for
-the jokers. `comboRank` is the comparison value — the rank card sits at 15 (above
-ace), black joker 16, red joker 17; runs are ranked by their top card.
+- **`gameNo`** — human-friendly sequence, `"<variant>.<n>"`: the nth game of the
+  4- or 6-player variant (e.g. `4.7`). Also the filename. Counted from the data
+  repo so it survives Render restarts; override in `storage.js` (`GAMENO_OVERRIDE`
+  const or the `GAMENO_OVERRIDE` env var, e.g. `4:12,6:3`) if the count is ever wrong.
+- **`gameId`** — timestamp; the collision-proof unique key behind `gameNo`.
+- **`date`** — `YYYY-MM-DD` for easy grouping.
+- **Card codes** — suit (`S H D C`) + rank (`2`–`9`, `T J Q K A`), plus `BJ`
+  (**Small Joker**) / `RJ` (**Big Joker**). Stored as readable codes; the Python
+  loader converts to integer values for analysis (see below).
+- **`comboRank`** — comparison value: rank card = 15 (above ace), small joker 16,
+  big joker 17; runs are ranked by their top card.
+
+Combo IDs stored in `combo`: `single`, `pair`, `triple`, `hung` (full house /
+three-with-two), `straight`, `tongHuaShun` (straight flush), `tractor` (3 pairs),
+`steelBoard` (2 triples), `bomb4`…`bomb12`, `jokerBomb`, `unknown`.
 
 Written to:
-- `data/games/<gameId>.json` — authoritative, one file per game
+- `data/games/<gameNo>.json` — one file per game (local scratch; ephemeral on Render)
 - `data/turns.jsonl` — append-only flat log
+- the **`guandan-data` GitHub repo** — the durable copy, when the token is set
 
 ## Persistence on Render
 
 **Render's filesystem is ephemeral** — `data/` is wiped on every redeploy. Two ways out:
 
 - **Export button** (always available) — downloads all turns as JSONL.
-- **GitHub sync** (optional) — set `GITHUB_TOKEN` and `GITHUB_REPO` (`owner/repo`)
-  env vars and each saved game is committed to `games/` in that repo. Uncomment
-  the entries in `render.yaml`. Without these the app runs exactly the same, just
-  local-only.
+- **GitHub sync** (recommended) — set `GITHUB_TOKEN` in Render and each saved game
+  is committed to `games/` on the **`data` branch of this repo**. That branch is an
+  *orphan* — its own history, independent of `main` — so code commits and "Add game"
+  commits never mix. `GITHUB_REPO`/`GITHUB_BRANCH` default to this repo's `data`
+  branch; only set them if you fork or rename. Without a token the app still runs,
+  just local-only.
+
+To analyse the collected data:
+
+```bash
+git fetch origin data && git checkout data   # switch to the data branch
+python -m analysis.loader
+git checkout main                             # back to code
+```
 
 ## Analysis
 
@@ -87,8 +115,17 @@ df = load_turns()
 combo_frequency(df)                       # what shapes get played
 player_summary(df)                        # pass rate, bomb rate per player
 df[df.is_bomb].groupby("name").size()     # who bombs most
-explode_cards(df).card_rank.value_counts()  # per-card frequency
+
+# explode_cards adds integer columns: value (2-14, jokers 16/17), game_value
+# (rank card bumped to 15), suit, card_rank, is_wildcard
+ex = explode_cards(df)
+ex.value.mean()                           # average card value played
+ex.groupby("suit").size()                 # suit distribution
+ex[ex.is_wildcard]                        # every wildcard play
 ```
+
+Cards are stored as readable codes (`S4`) and converted to integers in Python, so
+storage stays git-diffable while analysis gets clean numeric columns.
 
 ## Layout
 

@@ -9,10 +9,14 @@ services:
         value: production
       - key: PORT
         value: 10000
-      # Optional — set these later to auto-commit collected games to GitHub.
-      # Without them the app still works and saves to ./data (ephemeral on Render,
-      # persistent when running locally). Use the Export button to pull data out.
-      # - key: GITHUB_TOKEN
-      #   sync: false
+      # Set GITHUB_TOKEN to auto-commit collected games to the 'data' branch of
+      # this repo (code stays on main, untouched). Without it the app still works
+      # and saves to ./data (ephemeral on Render) — use the Export button to pull
+      # data out. GITHUB_REPO/GITHUB_BRANCH default to this repo's data branch;
+      # only override if you fork or rename.
+      - key: GITHUB_TOKEN
+        sync: false
       # - key: GITHUB_REPO
-      #   value: yourname/guandan-data
+      #   value: davidtaili88/guandan-data-collector
+      # - key: GITHUB_BRANCH
+      #   value: data
