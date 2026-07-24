@@ -26,6 +26,12 @@ room. Default room is `main`.
    **Record pass**. Every turn needs an entry.
 4. The host clicks **End & save game** to persist it.
 
+If a game breaks up before it finishes, any player can click **Abandon my game**
+and choose to **save their partial hand** (recorded as `status: "abandoned"`) or
+**discard** it. Abandoning only affects that one player — others keep playing, and
+the abandoning player is removed from the game so the host's later save won't
+double-count them.
+
 Combos are auto-detected and shown before you record. If a selection isn't a
 legal shape it warns but still lets you save it, tagged `unknown` — data entry is
 never blocked.
@@ -66,6 +72,9 @@ means tricks can't be reconstructed across players.
   const or the `GAMENO_OVERRIDE` env var, e.g. `4:12,6:3`) if the count is ever wrong.
 - **`gameId`** — timestamp; the collision-proof unique key behind `gameNo`.
 - **`date`** — `YYYY-MM-DD` for easy grouping.
+- **`status`** — `"complete"` (normal end) or `"abandoned"` (a player quit
+  mid-game and saved their partial hand). Filter in analysis with
+  `df[df.status == "complete"]`.
 - **Card codes** — suit (`S H D C`) + rank (`2`–`9`, `T J Q K A`), plus `BJ`
   (**Small Joker**) / `RJ` (**Big Joker**). Stored as readable codes; the Python
   loader converts to integer values for analysis (see below).

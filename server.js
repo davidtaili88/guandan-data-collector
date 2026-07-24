@@ -78,18 +78,36 @@ function nextFreeSeat(room) {
   return taken.size; // overflow observer seats
 }
 
-function snapshotGame(room) {
+// Snapshot the whole room's game. status is 'complete' for a normal end.
+function snapshotGame(room, status = 'complete') {
   return {
     gameId: room.gameId,
     playerCount: room.settings.playerCount,
     rankCard: room.settings.rankCard,
     date: room.startedAt.slice(0, 10), // YYYY-MM-DD, for easy grouping/filtering
+    status,
     startedAt: room.startedAt,
     endedAt: new Date().toISOString(),
     players: Object.values(room.players)
       .filter((p) => p.turns.length > 0)
       .map((p) => ({ seat: p.seat, name: p.name, turns: p.turns }))
       .sort((a, b) => a.seat - b.seat),
+  };
+}
+
+// Snapshot a SINGLE player's stream — used when a player abandons their own game
+// mid-play. Shares the room's gameId so it can be tied back to the same table,
+// but is a standalone record marked status 'abandoned'.
+function snapshotPlayer(room, player) {
+  return {
+    gameId: room.gameId,
+    playerCount: room.settings.playerCount,
+    rankCard: room.settings.rankCard,
+    date: room.startedAt.slice(0, 10),
+    status: 'abandoned',
+    startedAt: room.startedAt,
+    endedAt: new Date().toISOString(),
+    players: [{ seat: player.seat, name: player.name, turns: player.turns }],
   };
 }
 
@@ -196,6 +214,35 @@ io.on('connection', (socket) => {
     room.gameId = null;
     for (const p of Object.values(room.players)) p.turns = [];
     io.to(roomId).emit('turnsReplaced', []);
+    io.to(roomId).emit('state', publicState(room));
+  });
+
+  // A player abandons their own game mid-play. keep=true saves their partial
+  // stream (flagged 'abandoned'); keep=false discards it. Either way the player
+  // leaves the current game so the host's later save won't double-count them.
+  socket.on('abandonGame', async ({ keep }) => {
+    const room = getRoom(roomId);
+    const p = room.players[socket.id];
+    if (!p || !room.settings) return;
+
+    if (keep && p.turns.length) {
+      try {
+        const res = await saveGame(snapshotPlayer(room, p));
+        let msg = `Abandoned & saved ${res.gameNo} (${p.name}) — ${res.turnCount} turns`;
+        if (res.github?.ok) msg += ' · pushed to GitHub';
+        else if (res.github?.error) msg += ` · GitHub failed: ${res.github.error}`;
+        socket.emit('toast', msg);
+      } catch (err) {
+        socket.emit('toast', `Save failed: ${err.message}`);
+        return; // keep their turns so they can retry rather than lose data
+      }
+    } else {
+      socket.emit('toast', keep ? 'Nothing to save — no turns recorded.' : 'Game abandoned, not saved.');
+    }
+
+    // Reset this player's stream for the current game and pull them out of it.
+    p.turns = [];
+    socket.emit('turnsReplaced', []);
     io.to(roomId).emit('state', publicState(room));
   });
 

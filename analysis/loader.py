@@ -94,6 +94,10 @@ def load_turns(data_dir: Path | str | None = None) -> pd.DataFrame:
                         "game_id": game["gameId"],
                         "game_no": game.get("gameNo"),
                         "date": game.get("date"),
+                        # 'complete' (normal end) or 'abandoned' (player quit
+                        # mid-game). Older records without the field are assumed
+                        # complete. Filter with df[df.status == 'complete'].
+                        "status": game.get("status", "complete"),
                         "player_count": game["playerCount"],
                         "rank_card": rank_card,
                         "rank_card_value": _BASE_VALUE.get(rank_card),

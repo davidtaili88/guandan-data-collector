@@ -37,6 +37,9 @@ socket.on('state', (state) => {
   if (joined && settings) $('setup-overlay').classList.add('hidden');
   else $('setup-overlay').classList.remove('hidden');
 
+  // Any joined player can abandon their own game while one is running.
+  $('abandon-btn').classList.toggle('hidden', !(joined && settings));
+
   if (settings) renderDeck();
 });
 
@@ -275,9 +278,41 @@ $('end-btn').addEventListener('click', () => {
   if (confirm('End the game and save all recorded turns?')) socket.emit('endGame');
 });
 
+$('abandon-btn').addEventListener('click', () => {
+  const n = Number($('turn-count').textContent) || 0;
+  showAbandonModal(n);
+});
+
 $('export-btn').addEventListener('click', () => {
   window.location.href = '/api/export.jsonl';
 });
+
+// Abandon = leave the current game early. Three outcomes: save the partial hand
+// (flagged 'abandoned'), discard it, or cancel. Built as a modal because a plain
+// confirm() can't offer three choices.
+function showAbandonModal(turnCount) {
+  const overlay = $('abandon-overlay');
+  $('abandon-summary').textContent = turnCount
+    ? `You've recorded ${turnCount} turn${turnCount === 1 ? '' : 's'} this game.`
+    : "You haven't recorded any turns yet.";
+  // No point offering "save" when there's nothing to save.
+  $('abandon-save').classList.toggle('hidden', turnCount === 0);
+  overlay.classList.remove('hidden');
+}
+
+function hideAbandonModal() {
+  $('abandon-overlay').classList.add('hidden');
+}
+
+$('abandon-save').addEventListener('click', () => {
+  socket.emit('abandonGame', { keep: true });
+  hideAbandonModal();
+});
+$('abandon-discard').addEventListener('click', () => {
+  socket.emit('abandonGame', { keep: false });
+  hideAbandonModal();
+});
+$('abandon-cancel').addEventListener('click', hideAbandonModal);
 
 // ---------- Misc ----------
 let toastTimer = null;
