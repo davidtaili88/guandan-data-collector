@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: guandan-data-collector
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Optional — set these later to auto-commit collected games to GitHub.
+      # Without them the app still works and saves to ./data (ephemeral on Render,
+      # persistent when running locally). Use the Export button to pull data out.
+      # - key: GITHUB_TOKEN
+      #   sync: false
+      # - key: GITHUB_REPO
+      #   value: yourname/guandan-data

@@ -1,0 +1,16 @@
+{
+  "name": "guandan-data-collector",
+  "version": "1.0.0",
+  "description": "Web UI for collecting hand-by-hand play data from games of Guandan",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test/classify.test.mjs"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}

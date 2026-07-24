@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guandan Data Collector</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Join / setup overlay -->
+  <div id="setup-overlay" class="overlay">
+    <div class="join-box">
+      <h1>🃏 Guandan Data Collector</h1>
+      <p class="sub">Log every hand you play so it can be analysed later.</p>
+
+      <label class="field-label" for="name-input">Your name</label>
+      <input id="name-input" type="text" placeholder="Your name" maxlength="20" />
+      <button id="join-btn" class="primary">Join room</button>
+
+      <div id="host-setup" class="hidden">
+        <hr />
+        <p class="sub">Game setup <span class="muted">(host only)</span></p>
+
+        <label class="field-label">How many players?</label>
+        <div id="player-count-group" class="seg-group">
+          <button class="seg active" data-count="4">4 players</button>
+          <button class="seg" data-count="6">6 players</button>
+        </div>
+
+        <label class="field-label">Rank card (打几)</label>
+        <div id="rank-card-group" class="rank-grid"></div>
+
+        <button id="start-btn" class="primary" disabled>Start game</button>
+      </div>
+
+      <p id="setup-status" class="hint-text"></p>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">🃏 Guandan Collector</div>
+    <div class="topbar-info">
+      <span id="game-info" class="muted">No game running</span>
+      <button id="export-btn" class="ghost">Export data</button>
+      <button id="end-btn" class="danger hidden">End &amp; save game</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="deck-panel">
+      <div class="panel-head">
+        <h2>Select the cards you played</h2>
+        <span id="wildcard-note" class="muted"></span>
+      </div>
+      <div id="deck"></div>
+    </section>
+
+    <aside class="side-panel">
+      <div class="selection-box">
+        <h3>Selection</h3>
+        <div id="selected-cards" class="selected-cards">
+          <span class="muted">Click cards to add them here</span>
+        </div>
+        <div id="combo-readout" class="combo-readout"></div>
+        <div class="action-row">
+          <button id="play-btn" class="primary" disabled>Record play</button>
+          <button id="clear-btn" class="ghost" disabled>Clear</button>
+        </div>
+        <button id="pass-btn" class="pass">Record pass</button>
+      </div>
+
+      <div class="log-box">
+        <div class="panel-head">
+          <h3>Your turns (<span id="turn-count">0</span>)</h3>
+          <button id="undo-btn" class="ghost small" disabled>Undo last</button>
+        </div>
+        <ol id="turn-log" class="turn-log"></ol>
+      </div>
+
+      <div class="players-box">
+        <h3>In this room</h3>
+        <ul id="player-list" class="player-list"></ul>
+      </div>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

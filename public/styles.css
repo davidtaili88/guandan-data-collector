@@ -1,0 +1,233 @@
+:root {
+  --bg: #0f1419;
+  --panel: #171d26;
+  --panel-2: #1e2632;
+  --line: #2a3441;
+  --text: #e6edf3;
+  --muted: #8b98a8;
+  --accent: #4c9aff;
+  --green: #3fb950;
+  --red: #f85149;
+  --amber: #d29922;
+  --card-bg: #f7f9fb;
+  --card-ink: #12161c;
+  --card-red: #c02b3a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 650; }
+h1 { font-size: 24px; }
+h2 { font-size: 17px; }
+h3 { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+
+.hidden { display: none !important; }
+.muted { color: var(--muted); font-size: 13px; }
+code { background: #0b0f14; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+hr { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
+
+/* ---------- Buttons ---------- */
+button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid transparent; }
+button:disabled { opacity: .4; cursor: not-allowed; }
+
+.primary {
+  background: var(--accent); color: #06131f; font-weight: 650;
+  padding: 10px 16px; width: 100%; border: none;
+}
+.primary:hover:not(:disabled) { background: #6badff; }
+
+.ghost {
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--line); padding: 7px 12px;
+}
+.ghost:hover:not(:disabled) { color: var(--text); border-color: var(--muted); }
+.ghost.small { padding: 3px 9px; font-size: 12px; }
+
+.danger { background: var(--red); color: #fff; border: none; padding: 7px 14px; font-weight: 600; }
+.danger:hover { background: #ff6b63; }
+
+.pass {
+  width: 100%; margin-top: 8px; padding: 10px;
+  background: var(--panel-2); color: var(--text);
+  border: 1px solid var(--line); font-weight: 600;
+}
+.pass:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ---------- Setup overlay ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(10, 14, 19, .93);
+  display: flex; align-items: center; justify-content: center;
+  overflow-y: auto; padding: 24px;
+}
+
+.join-box {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 14px; padding: 28px; width: 100%; max-width: 440px;
+}
+.join-box .sub { color: var(--muted); font-size: 14px; margin: 6px 0 20px; }
+
+.field-label {
+  display: block; font-size: 12px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .04em; margin: 16px 0 7px;
+}
+
+input[type="text"] {
+  width: 100%; padding: 10px 12px; margin-bottom: 12px;
+  background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 8px; color: var(--text);
+}
+input[type="text"]:focus { outline: none; border-color: var(--accent); }
+
+.seg-group { display: flex; gap: 8px; }
+.seg {
+  flex: 1; padding: 9px; background: var(--panel-2);
+  border: 1px solid var(--line); color: var(--muted);
+}
+.seg.active { background: var(--accent); color: #06131f; border-color: var(--accent); font-weight: 650; }
+
+.rank-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.rank-chip {
+  padding: 9px 0; background: var(--panel-2);
+  border: 1px solid var(--line); color: var(--text); font-weight: 600;
+}
+.rank-chip.active { background: var(--accent); color: #06131f; border-color: var(--accent); }
+
+.hint-text { font-size: 13px; color: var(--muted); margin: 14px 0 0; text-align: center; }
+
+/* ---------- Topbar ---------- */
+.topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 20px; background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.brand { font-weight: 700; font-size: 16px; }
+.topbar-info { display: flex; align-items: center; gap: 12px; }
+
+/* ---------- Layout ---------- */
+.layout {
+  display: grid; grid-template-columns: 1fr 340px;
+  gap: 18px; padding: 18px; align-items: start;
+}
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+.deck-panel, .selection-box, .log-box, .players-box {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; padding: 16px;
+}
+.side-panel { display: flex; flex-direction: column; gap: 14px; }
+
+.panel-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px; gap: 10px;
+}
+
+/* ---------- Deck ---------- */
+.suit-row { display: flex; align-items: center; gap: 5px; margin-bottom: 6px; }
+.suit-label {
+  width: 24px; font-size: 19px; text-align: center;
+  color: var(--muted); flex-shrink: 0;
+}
+.suit-label.red { color: var(--card-red); }
+
+.card {
+  position: relative; flex: 1; min-width: 40px; height: 56px;
+  background: var(--card-bg); color: var(--card-ink);
+  border: 1.5px solid #c8d2dc; border-radius: 6px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1px; padding: 2px; transition: transform .08s, box-shadow .08s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+.card.red { color: var(--card-red); }
+.card-rank { font-size: 16px; font-weight: 700; line-height: 1; }
+.card-suit { font-size: 13px; line-height: 1; }
+
+.card.selected {
+  background: var(--accent); color: #06131f;
+  border-color: #fff; transform: translateY(-5px);
+  box-shadow: 0 0 0 2px var(--accent), 0 6px 14px rgba(0,0,0,.5);
+}
+
+/* Rank card + wildcard get persistent markers so they're obvious mid-game. */
+.card.is-rank-card::after {
+  content: ''; position: absolute; inset: -1px;
+  border: 2px solid var(--amber); border-radius: 6px; pointer-events: none;
+}
+.card.is-wildcard::before {
+  content: '★'; position: absolute; top: 1px; right: 3px;
+  font-size: 10px; color: var(--amber);
+}
+.card.joker .card-rank { font-size: 13px; }
+.card.joker.red { color: var(--card-red); }
+
+/* ---------- Selection ---------- */
+.selected-cards {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  min-height: 44px; padding: 8px;
+  background: var(--panel-2); border-radius: 8px; margin-bottom: 10px;
+}
+.chip {
+  background: var(--card-bg); color: var(--card-ink);
+  border: 1px solid #c8d2dc; border-radius: 5px;
+  padding: 4px 8px; font-weight: 650; font-size: 13px;
+}
+.chip.red { color: var(--card-red); }
+.chip:hover { background: #ffd9d9; border-color: var(--red); }
+
+.combo-readout { font-size: 13px; min-height: 20px; margin-bottom: 12px; }
+.combo-readout.ok { color: var(--green); }
+.combo-readout.warn { color: var(--amber); }
+
+.action-row { display: flex; gap: 8px; }
+.action-row .primary { flex: 2; }
+.action-row .ghost { flex: 1; }
+
+/* ---------- Turn log ---------- */
+.turn-log {
+  list-style: none; margin: 0; padding: 0;
+  max-height: 240px; overflow-y: auto;
+}
+.turn-log li {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 4px; border-bottom: 1px solid var(--line); font-size: 13px;
+}
+.t-num {
+  width: 22px; height: 22px; flex-shrink: 0;
+  background: var(--panel-2); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--muted);
+}
+.t-cards { display: flex; gap: 3px; flex-wrap: wrap; flex: 1; }
+.mini {
+  background: var(--card-bg); color: var(--card-ink);
+  border-radius: 3px; padding: 1px 4px; font-size: 11px; font-weight: 650;
+}
+.mini.red { color: var(--card-red); }
+.t-combo { color: var(--muted); font-size: 11px; }
+.t-pass { color: var(--amber); font-style: italic; flex: 1; }
+
+/* ---------- Players ---------- */
+.player-list { list-style: none; margin: 0; padding: 0; }
+.player-list li {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0; font-size: 13px;
+}
+.p-name { flex: 1; font-weight: 600; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dot.on { background: var(--green); }
+.dot.off { background: var(--muted); }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+  background: var(--panel-2); border: 1px solid var(--accent);
+  color: var(--text); padding: 11px 20px; border-radius: 9px;
+  font-size: 14px; z-index: 100; box-shadow: 0 6px 20px rgba(0,0,0,.5);
+}
