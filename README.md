@@ -23,9 +23,11 @@ room. Default room is `main`.
 2. The **host** (first to join) sets player count (4 or 6) and the rank card, then
    starts the game.
 3. Each player records their own actions: click cards → **Record play**, or
-   **Record pass**. Every turn needs an entry. Guandan uses **two decks**, so a
-   card can be selected twice — click again for the 2nd copy (a **×2** badge
-   appears), right-click to remove one.
+   **Record pass**. Every turn needs an entry. The 4-player game uses **two decks**
+   and the 6-player variant uses **three**, so a card can be selected up to that
+   many times — click again for another copy (a **×N** badge appears), right-click
+   to remove one. Jokers can form pairs and triples (of the same joker) and appear
+   in a hung; two big + two small jokers is the joker bomb.
 4. The host clicks **End & save game** to persist it.
 
 If a game breaks up before it finishes, any player can click **Abandon my game**

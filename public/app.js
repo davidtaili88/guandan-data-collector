@@ -122,6 +122,10 @@ function renderDeck() {
     ? `Rank card ${labelRank(rankCard)} · H${rankCard} is the wildcard`
     : '';
 
+  const decks = maxCopies();
+  $('deck-hint').textContent =
+    `Click to add · click again for more copies (${decks} decks, up to ×${decks}) · right-click to remove`;
+
   for (const suit of ['S', 'H', 'D', 'C']) {
     const row = document.createElement('div');
     row.className = 'suit-row';
@@ -166,7 +170,8 @@ function cardEl(code, rankCard) {
   if (rankCard && r === rankCard) el.classList.add('is-rank-card');
   if (rankCard && isWildcard(code, rankCard)) el.classList.add('is-wildcard');
 
-  // Count badge — Guandan is two decks, so each card can be selected up to twice.
+  // Count badge — shows "×N" when a card is selected more than once (two decks in
+  // the 4-player game, three in the 6-player variant; see maxCopies).
   const badge = document.createElement('span');
   badge.className = 'count-badge';
   el.appendChild(badge);
@@ -178,8 +183,9 @@ function cardEl(code, rankCard) {
   return el;
 }
 
-// Two decks: at most two of any identical card.
-const MAX_COPIES = 2;
+// Deck count = max copies of any identical card: 4-player Guandan uses two
+// decks, the 6-player variant uses three. Defaults to 2 until a game starts.
+const maxCopies = () => (settings?.playerCount === 6 ? 3 : 2);
 const countOf = (code) => selected.filter((c) => c === code).length;
 
 function paintCard(el, code, badge) {
@@ -197,7 +203,7 @@ function repaintDeck() {
 }
 
 function addCard(code) {
-  if (countOf(code) >= MAX_COPIES) return;
+  if (countOf(code) >= maxCopies()) return;
   selected.push(code);
   renderSelection();
   repaintDeck();

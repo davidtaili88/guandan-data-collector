@@ -127,10 +127,15 @@ export function classify(cards, rankCard) {
     return RANKS.indexOf(r) + 2;
   };
 
-  // --- Four jokers: the highest bomb in the game ---
+  // --- Joker bomb: exactly two big + two small jokers, the highest in the game.
+  // Checked before same-rank groups so 2+2 jokers (two ranks) isn't mistaken for
+  // anything else. Same-rank JOKER groups (e.g. 3 big jokers) fall through below.
   if (n === 4 && jokers.length === 4) return result('jokerBomb', 100, 'Joker bomb 王炸');
 
-  // Jokers other than in a joker bomb can't participate in shaped combos.
+  // Same-suit-line combos (straight / tube / plate / straight flush) can't
+  // contain a joker — jokers have no sequential rank. Same-rank groups (pair/
+  // triple/bomb) and full houses CAN include jokers, since a big/small joker is a
+  // rank of its own; those paths handle jokers directly.
   const jokerFree = jokers.length === 0;
 
   // --- Single ---
@@ -141,8 +146,12 @@ export function classify(cards, rankCard) {
 
   const uniq = new Set(fixedRanks);
 
-  // --- Same-rank groups: pair / triple / bomb(4+) ---
-  if (jokerFree && (uniq.size === 1 || fixed.length === 0)) {
+  // --- Same-rank groups: pair / triple / bomb(4+). Works for jokers too — a
+  // group of identical big (or small) jokers has uniq.size === 1. The 2+2 joker
+  // bomb has uniq.size === 2 and was already returned above, so it never reaches
+  // here. Wildcards (hearts of the rank card) are counted via the fixed+wild
+  // split: uniq.size===1 fixed rank plus wilds all completing that same rank.
+  if (uniq.size <= 1) {
     const r = fixed.length ? fixedRanks[0] : rankCard;
     const v = valOf(r);
     if (n === 2) return result('pair', v, `Pair of ${labelRank(r)}`);
@@ -177,8 +186,9 @@ export function classify(cards, rankCard) {
     if (top !== null) return result('steelBoard', top, `Steel Board to ${labelRank(runTopRank(top))}`);
   }
 
-  // --- Full house 三带二 (triple + pair) ---
-  if (jokerFree && n === 5) {
+  // --- Full house / hung 三带二 (triple + pair). Jokers allowed: a big/small
+  // joker counts as its own rank, so 3 big jokers over a pair of 5s is a hung.
+  if (n === 5) {
     const c = counts(fixedRanks);
     const entries = [...c.entries()].sort((a, b) => b[1] - a[1]);
     if (w === 0 && entries.length === 2 && entries[0][1] === 3 && entries[1][1] === 2) {
