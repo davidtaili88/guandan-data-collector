@@ -13,6 +13,8 @@
       "name": "paggity",
       "teammates": [],
       "enemies": [],
+      "place": 4,
+      "cardsRemaining": null,
       "turns": [
         {
           "turn": 1,
