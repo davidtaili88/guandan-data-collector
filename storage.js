@@ -104,13 +104,27 @@ async function countVariantInGithub(playerCount) {
   ).length;
 }
 
-export async function saveGame(game) {
+// Serialize all saves through a single promise chain. Counting the next gameNo
+// and then writing the file must be atomic: without this, two saves that start
+// close together both read the same count and both claim e.g. "4.1". Since one
+// Node process handles every save, chaining them is a complete fix.
+let saveChain = Promise.resolve();
+export function saveGame(game) {
+  const run = saveChain.then(() => _saveGameImpl(game));
+  // Keep the chain alive even if this save throws, so one failure doesn't wedge
+  // all future saves.
+  saveChain = run.catch(() => {});
+  return run;
+}
+
+async function _saveGameImpl(game) {
   await ensureDirs();
 
   // Assign the variant sequence number: "4.n" or "6.n". gameId (a timestamp)
   // remains the collision-proof unique key; gameNo is the human-friendly label
-  // and the filename. If two games race, gameNo could duplicate but the file
-  // still gets a distinct name via a "-<suffix>" from the timestamp.
+  // and the filename. Counting + writing are serialized (see saveGame) so no two
+  // games can claim the same n; the "-<suffix>" fallback below is a belt-and-
+  // braces guard against a stale count from the remote data branch.
   const n = await nextGameNumber(game.playerCount);
   game.gameNo = `${game.playerCount}.${n}`;
 

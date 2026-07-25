@@ -40,6 +40,14 @@ socket.on('state', (state) => {
   // Any joined player can abandon their own game while one is running.
   $('abandon-btn').classList.toggle('hidden', !(joined && settings));
 
+  // Reflect this player's saved relations (e.g. after a reconnect). Only fill
+  // when both inputs are empty, so we never overwrite what the user is typing.
+  const me = state.players.find((p) => p.id === socket.id);
+  if (me && !$('teammates-input').value && !$('enemies-input').value) {
+    if (me.teammates?.length) $('teammates-input').value = me.teammates.join(', ');
+    if (me.enemies?.length) $('enemies-input').value = me.enemies.join(', ');
+  }
+
   if (settings) renderDeck();
 });
 
@@ -285,6 +293,23 @@ $('abandon-btn').addEventListener('click', () => {
 
 $('export-btn').addEventListener('click', () => {
   window.location.href = '/api/export.jsonl';
+});
+
+// ---------- Teammates / enemies (optional, self-reported) ----------
+const parseNames = (s) => s.split(',').map((x) => x.trim()).filter(Boolean);
+
+$('relations-btn').addEventListener('click', () => {
+  socket.emit('setRelations', {
+    teammates: parseNames($('teammates-input').value),
+    enemies: parseNames($('enemies-input').value),
+  });
+});
+
+socket.on('relationsSet', ({ teammates, enemies }) => {
+  $('teammates-input').value = teammates.join(', ');
+  $('enemies-input').value = enemies.join(', ');
+  $('relations-status').textContent = 'Saved.';
+  setTimeout(() => ($('relations-status').textContent = ''), 2000);
 });
 
 // Abandon = leave the current game early. Three outcomes: save the partial hand

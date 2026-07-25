@@ -11,6 +11,12 @@ import { saveGame, readAllGames, listGames, githubEnabled } from './storage.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Bump when the saved game format changes in a way analysis must distinguish
+// (new/renamed fields, different card encoding, second-deck wildcard rules, …).
+// Every saved game carries this so old and new records stay tellable apart.
+//   1 — initial: single deck, per-player turn streams, combo cached at record time
+const SCHEMA_VERSION = 1;
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -58,6 +64,8 @@ function publicState(room) {
       connected: p.connected,
       turnCount: p.turns.length,
       lastTurn: p.turns[p.turns.length - 1] || null,
+      teammates: p.teammates || [],
+      enemies: p.enemies || [],
     })).sort((a, b) => a.seat - b.seat),
   };
 }
@@ -81,6 +89,7 @@ function nextFreeSeat(room) {
 // Snapshot the whole room's game. status is 'complete' for a normal end.
 function snapshotGame(room, status = 'complete') {
   return {
+    schema: SCHEMA_VERSION,
     gameId: room.gameId,
     playerCount: room.settings.playerCount,
     rankCard: room.settings.rankCard,
@@ -90,7 +99,11 @@ function snapshotGame(room, status = 'complete') {
     endedAt: new Date().toISOString(),
     players: Object.values(room.players)
       .filter((p) => p.turns.length > 0)
-      .map((p) => ({ seat: p.seat, name: p.name, turns: p.turns }))
+      .map((p) => ({
+        seat: p.seat, name: p.name,
+        teammates: p.teammates, enemies: p.enemies,
+        turns: p.turns,
+      }))
       .sort((a, b) => a.seat - b.seat),
   };
 }
@@ -100,6 +113,7 @@ function snapshotGame(room, status = 'complete') {
 // but is a standalone record marked status 'abandoned'.
 function snapshotPlayer(room, player) {
   return {
+    schema: SCHEMA_VERSION,
     gameId: room.gameId,
     playerCount: room.settings.playerCount,
     rankCard: room.settings.rankCard,
@@ -107,7 +121,11 @@ function snapshotPlayer(room, player) {
     status: 'abandoned',
     startedAt: room.startedAt,
     endedAt: new Date().toISOString(),
-    players: [{ seat: player.seat, name: player.name, turns: player.turns }],
+    players: [{
+      seat: player.seat, name: player.name,
+      teammates: player.teammates, enemies: player.enemies,
+      turns: player.turns,
+    }],
   };
 }
 
@@ -133,7 +151,11 @@ io.on('connection', (socket) => {
       prior.connected = true;
       room.players[socket.id] = prior;
     } else {
-      const p = { socketId: socket.id, seat: nextFreeSeat(room), name: clean, turns: [], connected: true };
+      const p = {
+        socketId: socket.id, seat: nextFreeSeat(room), name: clean,
+        turns: [], connected: true,
+        teammates: [], enemies: [], // self-reported, optional
+      };
       room.players[socket.id] = p;
       room.playersByName[clean] = p;
     }
@@ -153,6 +175,22 @@ io.on('connection', (socket) => {
     for (const p of Object.values(room.players)) p.turns = [];
     io.to(roomId).emit('state', publicState(room));
     io.to(roomId).emit('toast', `Game started — ${pc} players, rank card ${rc}`);
+  });
+
+  // Set this player's self-reported teammates/enemies (free-text names, optional,
+  // may be empty). Stored on the player and persisted with their game record.
+  socket.on('setRelations', ({ teammates, enemies }) => {
+    const room = getRoom(roomId);
+    const p = room.players[socket.id];
+    if (!p) return;
+    const clean = (arr) => (Array.isArray(arr) ? arr : [])
+      .map((s) => String(s || '').trim().slice(0, 20))
+      .filter(Boolean)
+      .slice(0, 10);
+    p.teammates = clean(teammates);
+    p.enemies = clean(enemies);
+    socket.emit('relationsSet', { teammates: p.teammates, enemies: p.enemies });
+    io.to(roomId).emit('state', publicState(room));
   });
 
   // Record one action for THIS socket's player. cards=[] means a pass.

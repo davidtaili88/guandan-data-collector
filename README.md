@@ -44,16 +44,20 @@ means tricks can't be reconstructed across players.
 
 ```json
 {
+  "schema": 1,
   "gameId": "2026-07-24T01-58-23-p7hn",
   "gameNo": "4.7",
   "playerCount": 4,
   "rankCard": "7",
   "date": "2026-07-24",
+  "status": "complete",
   "startedAt": "...", "endedAt": "...",
   "players": [
     {
       "seat": 0,
       "name": "David",
+      "teammates": ["Kevin"],
+      "enemies": ["Amy", "Sam"],
       "turns": [
         { "turn": 1, "action": "play", "cards": ["S5","H5","D5","C5"],
           "combo": "bomb4", "comboRank": 5, "usedWildcards": [] },
@@ -66,6 +70,12 @@ means tricks can't be reconstructed across players.
 }
 ```
 
+- **`schema`** — format version, currently `1`. Bumped when the saved format
+  changes in a way analysis must distinguish, so old and new records stay tellable
+  apart. The loader exposes it as a `schema` column.
+- **`teammates` / `enemies`** — self-reported name lists per player, both optional
+  (may be empty). Entered on the site; carried on both complete and abandoned
+  records so partner/opponent context survives even when a game doesn't finish.
 - **`gameNo`** — human-friendly sequence, `"<variant>.<n>"`: the nth game of the
   4- or 6-player variant (e.g. `4.7`). Also the filename. Counted from the data
   repo so it survives Render restarts; override in `storage.js` (`GAMENO_OVERRIDE`
@@ -121,6 +131,9 @@ python -m analysis.loader          # quick summary
 from analysis.loader import load_turns, combo_frequency, player_summary, explode_cards
 
 df = load_turns()
+# Or re-derive combo/comboRank from raw cards with the CURRENT classifier, so a
+# later fix to the combo logic retroactively corrects old data (needs Node):
+df = load_turns(reclassify=True)
 combo_frequency(df)                       # what shapes get played
 player_summary(df)                        # pass rate, bomb rate per player
 df[df.is_bomb].groupby("name").size()     # who bombs most
@@ -145,4 +158,5 @@ storage stays git-diffable while analysis gets clean numeric columns.
 | `public/app.js` | UI: deck rendering, selection, live combo readout |
 | `storage.js` | Local JSON/JSONL writes + optional GitHub commits |
 | `analysis/loader.py` | pandas loaders and summary helpers |
+| `analysis/reclassify.mjs` | Node bridge so the loader can re-derive combos via `guandan.js` |
 | `test/classify.test.mjs` | Classifier tests |

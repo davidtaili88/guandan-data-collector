@@ -75,12 +75,20 @@ def load_games(data_dir: Path | str | None = None) -> list[dict]:
     return games
 
 
-def load_turns(data_dir: Path | str | None = None) -> pd.DataFrame:
+def load_turns(
+    data_dir: Path | str | None = None, reclassify: bool = False
+) -> pd.DataFrame:
     """Flatten all games into one turn-per-row DataFrame.
 
-    Columns: game_id, player_count, rank_card, seat, name, turn, action,
+    Columns: schema, game_id, game_no, date, status, player_count, rank_card,
+             rank_card_value, seat, name, teammates, enemies, turn, action,
              cards, combo, combo_rank, used_wildcards, n_cards, is_bomb,
              is_pass, used_wildcard
+
+    The stored ``combo``/``comboRank`` are cached at record time. Pass
+    ``reclassify=True`` to recompute them from the raw ``cards`` using the CURRENT
+    classifier (analysis/reclassify.mjs -> public/guandan.js), so a later fix to
+    the combo logic retroactively corrects old data. Requires Node on PATH.
     """
     rows = []
     for game in load_games(data_dir):
@@ -91,6 +99,7 @@ def load_turns(data_dir: Path | str | None = None) -> pd.DataFrame:
                 rank_card = str(game["rankCard"])
                 rows.append(
                     {
+                        "schema": game.get("schema", 1),
                         "game_id": game["gameId"],
                         "game_no": game.get("gameNo"),
                         "date": game.get("date"),
@@ -104,6 +113,9 @@ def load_turns(data_dir: Path | str | None = None) -> pd.DataFrame:
                         "started_at": game.get("startedAt"),
                         "seat": player["seat"],
                         "name": player["name"],
+                        # Self-reported relationships (may be empty lists).
+                        "teammates": player.get("teammates", []),
+                        "enemies": player.get("enemies", []),
                         "turn": turn["turn"],
                         "action": turn["action"],
                         "cards": cards,
@@ -118,11 +130,54 @@ def load_turns(data_dir: Path | str | None = None) -> pd.DataFrame:
                 )
 
     df = pd.DataFrame(rows)
-    if not df.empty:
-        df["started_at"] = pd.to_datetime(df["started_at"], errors="coerce")
-        df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
-        df["combo"] = df["combo"].astype("category")
-        df["name"] = df["name"].astype("category")
+    if df.empty:
+        return df
+
+    if reclassify:
+        df = _reclassify(df)
+
+    df["started_at"] = pd.to_datetime(df["started_at"], errors="coerce")
+    df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
+    df["combo"] = df["combo"].astype("category")
+    df["name"] = df["name"].astype("category")
+    df["is_bomb"] = df["combo"].isin(BOMB_COMBOS)
+    return df
+
+
+def _reclassify(df: pd.DataFrame) -> pd.DataFrame:
+    """Recompute combo/comboRank/used_wildcards from raw cards via the JS
+    classifier, so analysis reflects the current rules rather than the values
+    cached when each turn was recorded. Passes are left untouched.
+    """
+    import subprocess
+
+    plays = df[~df["is_pass"]]
+    if plays.empty:
+        return df
+
+    payload = {
+        "rows": [
+            {"cards": list(c), "rankCard": rc}
+            for c, rc in zip(plays["cards"], plays["rank_card"])
+        ]
+    }
+    script = Path(__file__).resolve().parent / "reclassify.mjs"
+    proc = subprocess.run(
+        ["node", str(script)],
+        input=json.dumps(payload),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(f"reclassify.mjs failed: {proc.stderr.strip()}")
+    results = json.loads(proc.stdout)["results"]
+
+    df = df.copy()
+    for idx, res in zip(plays.index, results):
+        df.at[idx, "combo"] = res["combo"]
+        df.at[idx, "combo_rank"] = res["comboRank"]
+        df.at[idx, "used_wildcards"] = res["usedWildcards"]
+        df.at[idx, "used_wildcard"] = len(res["usedWildcards"]) > 0
     return df
 
 
