@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "gameId": "2026-07-25T09-02-59-yvcl",
+  "playerCount": 4,
+  "rankCard": "5",
+  "date": "2026-07-25",
+  "status": "complete",
+  "startedAt": "2026-07-25T09:02:59.284Z",
+  "endedAt": "2026-07-25T09:14:32.766Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 4,
+      "cardsRemaining": [
+        "C2",
+        "H3",
+        "S3",
+        "H7",
+        "S7",
+        "C7",
+        "S8",
+        "H8",
+        "D8",
+        "H9",
+        "S9",
+        "CT",
+        "HT",
+        "SK"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "pass"
+        },
+        {
+          "turn": 2,
+          "action": "pass"
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "play",
+          "cards": [
+            "D6",
+            "C6"
+          ],
+          "combo": "pair",
+          "comboRank": 6,
+          "usedWildcards": []
+        },
+        {
+          "turn": 5,
+          "action": "play",
+          "cards": [
+            "HA",
+            "HA"
+          ],
+          "combo": "pair",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "play",
+          "cards": [
+            "C5"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 12,
+          "action": "pass"
+        },
+        {
+          "turn": 13,
+          "action": "pass"
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "play",
+          "cards": [
+            "DT",
+            "DJ",
+            "DQ",
+            "DK",
+            "DA"
+          ],
+          "combo": "tongHuaShun",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 16,
+          "action": "play",
+          "cards": [
+            "D4",
+            "D4",
+            "C4"
+          ],
+          "combo": "triple",
+          "comboRank": 4,
+          "usedWildcards": []
+        },
+        {
+          "turn": 17,
+          "action": "pass"
+        },
+        {
+          "turn": 18,
+          "action": "pass"
+        },
+        {
+          "turn": 19,
+          "action": "pass"
+        },
+        {
+          "turn": 20,
+          "action": "pass"
+        },
+        {
+          "turn": 21,
+          "action": "pass"
+        }
+      ]
+    }
+  ],
+  "gameNo": "4.2",
+  "fileName": "4.2.json"
+}
