@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "gameId": "2026-07-25T09-31-49-0yp5",
+  "playerCount": 4,
+  "rankCard": "9",
+  "date": "2026-07-25",
+  "status": "complete",
+  "startedAt": "2026-07-25T09:31:49.715Z",
+  "endedAt": "2026-07-25T09:41:49.252Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 4,
+      "cardsRemaining": [
+        "S3",
+        "S3",
+        "D3",
+        "S4",
+        "H5",
+        "D5",
+        "H6",
+        "D7",
+        "C8",
+        "H8",
+        "HJ",
+        "SJ",
+        "HK",
+        "BJ",
+        "RJ"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "play",
+          "cards": [
+            "SK"
+          ],
+          "combo": "single",
+          "comboRank": 13,
+          "usedWildcards": []
+        },
+        {
+          "turn": 2,
+          "action": "pass"
+        },
+        {
+          "turn": 3,
+          "action": "play",
+          "cards": [
+            "HT",
+            "DT"
+          ],
+          "combo": "pair",
+          "comboRank": 10,
+          "usedWildcards": []
+        },
+        {
+          "turn": 4,
+          "action": "pass"
+        },
+        {
+          "turn": 5,
+          "action": "pass"
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "play",
+          "cards": [
+            "HA",
+            "HA"
+          ],
+          "combo": "pair",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 12,
+          "action": "play",
+          "cards": [
+            "S7",
+            "S8",
+            "S9",
+            "H9",
+            "SJ"
+          ],
+          "combo": "tongHuaShun",
+          "comboRank": 11,
+          "usedWildcards": [
+            "H9"
+          ]
+        },
+        {
+          "turn": 13,
+          "action": "play",
+          "cards": [
+            "S2"
+          ],
+          "combo": "single",
+          "comboRank": 2,
+          "usedWildcards": []
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "pass"
+        },
+        {
+          "turn": 16,
+          "action": "pass"
+        },
+        {
+          "turn": 17,
+          "action": "pass"
+        }
+      ]
+    }
+  ],
+  "gameNo": "4.4",
+  "fileName": "4.4.json"
+}
