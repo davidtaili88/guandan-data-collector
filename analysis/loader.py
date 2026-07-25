@@ -120,8 +120,16 @@ def load_turns(
                         # or the game was abandoned. Kept as a float column so the
                         # NaN is representable.
                         "place": player.get("place"),
-                        "cards_remaining": player.get("cardsRemaining", []),
-                        "n_cards_remaining": len(player.get("cardsRemaining", [])),
+                        # cardsRemaining: a list means it was recorded (possibly
+                        # empty = finished with none). null/absent means "not
+                        # available" — kept as [] for the value but NaN count, so
+                        # "not recorded" stays distinct from "finished with 0".
+                        "cards_remaining": player.get("cardsRemaining") or [],
+                        "n_cards_remaining": (
+                            len(player["cardsRemaining"])
+                            if isinstance(player.get("cardsRemaining"), list)
+                            else float("nan")
+                        ),
                         "turn": turn["turn"],
                         "action": turn["action"],
                         "cards": cards,
