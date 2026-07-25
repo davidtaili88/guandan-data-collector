@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 // can import the exact same module, keeping client preview and server-recorded
 // classification identical.
 import { classify } from './public/guandan.js';
-import { saveGame, readAllGames, listGames, githubEnabled } from './storage.js';
+import { saveGame, readAllGames, listGames, githubEnabled, previewGameNumber } from './storage.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -55,6 +55,7 @@ function publicState(room) {
   return {
     settings: room.settings,
     gameId: room.gameId,
+    previewNo: room.previewNo || null,
     hostId: room.hostId,
     githubEnabled: githubEnabled(),
     players: Object.entries(room.players).map(([id, p]) => ({
@@ -164,7 +165,7 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('state', publicState(room));
   });
 
-  socket.on('startGame', ({ playerCount, rankCard }) => {
+  socket.on('startGame', async ({ playerCount, rankCard }) => {
     const room = getRoom(roomId);
     if (socket.id !== room.hostId) return;
     const pc = playerCount === 6 ? 6 : 4;
@@ -172,6 +173,14 @@ io.on('connection', (socket) => {
     room.settings = { playerCount: pc, rankCard: rc };
     room.gameId = makeGameId();
     room.startedAt = new Date().toISOString();
+    // Predicted number for live display only ("Four Player Game #7"). The real
+    // gameNo is assigned atomically at save time and may differ if another game
+    // saves in between.
+    try {
+      room.previewNo = await previewGameNumber(pc);
+    } catch {
+      room.previewNo = null;
+    }
     for (const p of Object.values(room.players)) p.turns = [];
     io.to(roomId).emit('state', publicState(room));
     io.to(roomId).emit('toast', `Game started — ${pc} players, rank card ${rc}`);

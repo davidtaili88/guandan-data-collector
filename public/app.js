@@ -164,27 +164,55 @@ function cardEl(code, rankCard) {
 
   if (rankCard && r === rankCard) el.classList.add('is-rank-card');
   if (rankCard && isWildcard(code, rankCard)) el.classList.add('is-wildcard');
-  if (selected.includes(code)) el.classList.add('selected');
 
-  el.addEventListener('click', () => toggleCard(code));
+  // Count badge — Guandan is two decks, so each card can be selected up to twice.
+  const badge = document.createElement('span');
+  badge.className = 'count-badge';
+  el.appendChild(badge);
+  paintCard(el, code, badge);
+
+  // Left click adds a copy (capped at 2); right click removes one.
+  el.addEventListener('click', () => addCard(code));
+  el.addEventListener('contextmenu', (e) => { e.preventDefault(); removeCard(code); });
   return el;
 }
 
-function toggleCard(code) {
-  const i = selected.indexOf(code);
-  if (i >= 0) selected.splice(i, 1);
-  else selected.push(code);
-  renderSelection();
-  // Reflect selected state on the deck without a full re-render.
+// Two decks: at most two of any identical card.
+const MAX_COPIES = 2;
+const countOf = (code) => selected.filter((c) => c === code).length;
+
+function paintCard(el, code, badge) {
+  const n = countOf(code);
+  el.classList.toggle('selected', n > 0);
+  badge.textContent = n > 1 ? `×${n}` : '';
+  badge.classList.toggle('hidden', n === 0);
+}
+
+function repaintDeck() {
   document.querySelectorAll('.card').forEach((el) => {
-    el.classList.toggle('selected', selected.includes(el.dataset.code));
+    const badge = el.querySelector('.count-badge');
+    if (badge) paintCard(el, el.dataset.code, badge);
   });
+}
+
+function addCard(code) {
+  if (countOf(code) >= MAX_COPIES) return;
+  selected.push(code);
+  renderSelection();
+  repaintDeck();
+}
+
+function removeCard(code) {
+  const i = selected.lastIndexOf(code);
+  if (i >= 0) selected.splice(i, 1);
+  renderSelection();
+  repaintDeck();
 }
 
 function clearSelection() {
   selected = [];
   renderSelection();
-  document.querySelectorAll('.card.selected').forEach((el) => el.classList.remove('selected'));
+  repaintDeck();
 }
 
 // ---------- Selection panel ----------
@@ -206,7 +234,7 @@ function renderSelection() {
     chip.className = 'chip' + (isJoker(code) ? (code === 'RJ' ? ' red' : '') : RED.has(suit) ? ' red' : '');
     chip.textContent = isJoker(code) ? code : labelRank(rankOf(code)) + SUIT_GLYPH[suit];
     chip.title = 'Remove';
-    chip.addEventListener('click', () => toggleCard(code));
+    chip.addEventListener('click', () => removeCard(code));
     box.appendChild(chip);
   }
 
@@ -276,9 +304,16 @@ function renderPlayers(players) {
 }
 
 function renderTopbar(state) {
-  $('game-info').textContent = state.settings
-    ? `Game ${state.gameId?.slice(0, 19)} · ${state.settings.playerCount}p · rank ${labelRank(state.settings.rankCard)}`
-    : 'No game running';
+  if (state.settings) {
+    const word = state.settings.playerCount === 6 ? 'Six' : 'Four';
+    // previewNo is "<variant>.<n>"; show the n as the game number. It's a live
+    // prediction — the actual saved number appears in the end-of-game toast.
+    const n = state.previewNo ? state.previewNo.split('.')[1] : '?';
+    $('game-info').textContent =
+      `${word} Player Game #${n} · rank ${labelRank(state.settings.rankCard)}`;
+  } else {
+    $('game-info').textContent = 'No game running';
+  }
   $('end-btn').classList.toggle('hidden', !(amHost && state.settings));
 }
 

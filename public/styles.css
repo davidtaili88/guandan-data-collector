@@ -141,6 +141,8 @@ input[type="text"]:focus { outline: none; border-color: var(--accent); }
   margin-bottom: 14px; gap: 10px;
 }
 
+.deck-hint { font-size: 12px; margin: 0 0 10px; }
+
 /* ---------- Deck ---------- */
 .suit-row { display: flex; align-items: center; gap: 5px; margin-bottom: 6px; }
 .suit-label {
@@ -178,6 +180,17 @@ input[type="text"]:focus { outline: none; border-color: var(--accent); }
 }
 .card.joker .card-rank { font-size: 13px; }
 .card.joker.red { color: var(--card-red); }
+
+/* Count badge — appears as "×2" when both copies (two decks) are selected. */
+.count-badge {
+  position: absolute; top: -6px; left: -6px;
+  min-width: 18px; height: 18px; padding: 0 4px;
+  background: var(--green); color: #06131f;
+  border-radius: 9px; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,.5);
+}
+.count-badge.hidden { display: none; }
 
 /* ---------- Selection ---------- */
 .selected-cards {

@@ -68,17 +68,27 @@ async function nextGameNumber(playerCount) {
     return n;
   }
 
-  let existing = 0;
+  return (await countVariant(playerCount)) + 1;
+}
+
+async function countVariant(playerCount) {
   if (githubEnabled()) {
     try {
-      existing = await countVariantInGithub(playerCount);
+      return await countVariantInGithub(playerCount);
     } catch {
-      existing = await countVariantLocal(playerCount); // fall back if API fails
+      return await countVariantLocal(playerCount); // fall back if API fails
     }
-  } else {
-    existing = await countVariantLocal(playerCount);
   }
-  return existing + 1;
+  return countVariantLocal(playerCount);
+}
+
+// Predicted gameNo for a variant, WITHOUT reserving it. For live display only —
+// the real number is assigned atomically at save time and may differ if another
+// game saves in between. Returns e.g. "4.7".
+export async function previewGameNumber(playerCount) {
+  const override = { ...parseEnvOverride(), ...GAMENO_OVERRIDE };
+  const n = override[playerCount] ?? (await countVariant(playerCount)) + 1;
+  return `${playerCount}.${n}`;
 }
 
 async function countVariantLocal(playerCount) {
