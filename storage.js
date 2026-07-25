@@ -50,6 +50,39 @@ export function githubEnabled() {
   return Boolean(GITHUB_TOKEN && GITHUB_REPO);
 }
 
+// Called once at startup: confirm the token can actually READ the target branch,
+// so a misconfigured token surfaces as a clear log line instead of a cryptic
+// "Branch data not found" only when the first game is saved. Returns a
+// human-readable status string; never throws.
+export async function verifyGithubAccess() {
+  if (!githubEnabled()) return 'GitHub sync: off (set GITHUB_TOKEN to enable)';
+  const url = `https://api.github.com/repos/${GITHUB_REPO}/branches/${GITHUB_BRANCH}`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github+json',
+        'User-Agent': 'guandan-data-collector',
+      },
+    });
+    if (res.ok) {
+      return `GitHub sync: OK — ${GITHUB_REPO}@${GITHUB_BRANCH} reachable`;
+    }
+    if (res.status === 404) {
+      return `GitHub sync: MISCONFIGURED — token can't see ${GITHUB_REPO}@${GITHUB_BRANCH}. ` +
+        `Most likely the token isn't scoped to the "${GITHUB_REPO.split('/')[1]}" repo, ` +
+        `or the "${GITHUB_BRANCH}" branch doesn't exist there. Games will save locally only.`;
+    }
+    if (res.status === 401 || res.status === 403) {
+      return `GitHub sync: MISCONFIGURED — token rejected (${res.status}). Check it hasn't ` +
+        `expired and has Contents: read+write on ${GITHUB_REPO}. Games will save locally only.`;
+    }
+    return `GitHub sync: unexpected ${res.status} checking ${GITHUB_REPO}@${GITHUB_BRANCH}`;
+  } catch (err) {
+    return `GitHub sync: check failed (${err.message}) — will still attempt saves`;
+  }
+}
+
 async function ensureDirs() {
   await fs.mkdir(GAMES_DIR, { recursive: true });
 }
@@ -210,7 +243,18 @@ async function pushToGithub(game, json, baseName) {
     }),
   });
 
-  if (!res.ok) throw new Error(`GitHub ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  if (!res.ok) {
+    const body = (await res.text()).slice(0, 200);
+    // GitHub says "Branch X not found" both when the branch is genuinely missing
+    // AND when the token simply can't see the repo — translate to the likely cause.
+    if (res.status === 404) {
+      throw new Error(
+        `can't write to ${GITHUB_REPO}@${GITHUB_BRANCH} — token likely not scoped ` +
+        `to the "${GITHUB_REPO.split('/')[1]}" repo (or lacks Contents: write). Saved locally.`,
+      );
+    }
+    throw new Error(`GitHub ${res.status}: ${body}`);
+  }
   return { ok: true, path: repoPath };
 }
 

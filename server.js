@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 // can import the exact same module, keeping client preview and server-recorded
 // classification identical.
 import { classify } from './public/guandan.js';
-import { saveGame, readAllGames, listGames, githubEnabled, previewGameNumber } from './storage.js';
+import { saveGame, readAllGames, listGames, githubEnabled, previewGameNumber, verifyGithubAccess } from './storage.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -342,7 +342,9 @@ app.get('/api/export.jsonl', async (_req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`Guandan data collector on :${PORT}`);
-  console.log(githubEnabled() ? 'GitHub sync: enabled' : 'GitHub sync: off (set GITHUB_TOKEN + GITHUB_REPO)');
+  // Verify GitHub access up front so a misconfigured token is obvious in the logs
+  // at boot, not only when the first game fails to push.
+  console.log(await verifyGithubAccess());
 });
