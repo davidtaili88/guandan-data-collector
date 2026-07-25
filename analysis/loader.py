@@ -116,6 +116,12 @@ def load_turns(
                         # Self-reported relationships (may be empty lists).
                         "teammates": player.get("teammates", []),
                         "enemies": player.get("enemies", []),
+                        # Finishing place (1..playerCount). NaN when not entered
+                        # or the game was abandoned. Kept as a float column so the
+                        # NaN is representable.
+                        "place": player.get("place"),
+                        "cards_remaining": player.get("cardsRemaining", []),
+                        "n_cards_remaining": len(player.get("cardsRemaining", [])),
                         "turn": turn["turn"],
                         "action": turn["action"],
                         "cards": cards,
@@ -140,6 +146,8 @@ def load_turns(
     df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
     df["combo"] = df["combo"].astype("category")
     df["name"] = df["name"].astype("category")
+    # Finishing place: float so a missing/abandoned place is NaN, not an error.
+    df["place"] = pd.to_numeric(df["place"], errors="coerce")
     df["is_bomb"] = df["combo"].isin(BOMB_COMBOS)
     return df
 

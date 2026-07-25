@@ -67,6 +67,8 @@ function publicState(room) {
       lastTurn: p.turns[p.turns.length - 1] || null,
       teammates: p.teammates || [],
       enemies: p.enemies || [],
+      place: p.place ?? null,
+      cardsRemainingCount: (p.cardsRemaining || []).length,
     })).sort((a, b) => a.seat - b.seat),
   };
 }
@@ -103,6 +105,8 @@ function snapshotGame(room, status = 'complete') {
       .map((p) => ({
         seat: p.seat, name: p.name,
         teammates: p.teammates, enemies: p.enemies,
+        place: p.place ?? null, // finishing position; null if not entered
+        cardsRemaining: p.cardsRemaining || [],
         turns: p.turns,
       }))
       .sort((a, b) => a.seat - b.seat),
@@ -125,6 +129,8 @@ function snapshotPlayer(room, player) {
     players: [{
       seat: player.seat, name: player.name,
       teammates: player.teammates, enemies: player.enemies,
+      place: null, // abandoned: player didn't finish, so no place
+      cardsRemaining: player.cardsRemaining || [], // whatever was in hand when abandoned
       turns: player.turns,
     }],
   };
@@ -156,6 +162,8 @@ io.on('connection', (socket) => {
         socketId: socket.id, seat: nextFreeSeat(room), name: clean,
         turns: [], connected: true,
         teammates: [], enemies: [], // self-reported, optional
+        place: null, // finishing position, set at game end; null = unknown/abandoned
+        cardsRemaining: [], // cards still in hand at game end (empty if finished)
       };
       room.players[socket.id] = p;
       room.playersByName[clean] = p;
@@ -181,7 +189,7 @@ io.on('connection', (socket) => {
     } catch {
       room.previewNo = null;
     }
-    for (const p of Object.values(room.players)) p.turns = [];
+    for (const p of Object.values(room.players)) { p.turns = []; p.place = null; p.cardsRemaining = []; }
     io.to(roomId).emit('state', publicState(room));
     io.to(roomId).emit('toast', `Game started — ${pc} players, rank card ${rc}`);
   });
@@ -199,6 +207,30 @@ io.on('connection', (socket) => {
     p.teammates = clean(teammates);
     p.enemies = clean(enemies);
     socket.emit('relationsSet', { teammates: p.teammates, enemies: p.enemies });
+    io.to(roomId).emit('state', publicState(room));
+  });
+
+  // Set this player's finishing place (1..playerCount), or null to clear.
+  socket.on('setPlace', ({ place }) => {
+    const room = getRoom(roomId);
+    const p = room.players[socket.id];
+    if (!p || !room.settings) return;
+    const max = room.settings.playerCount;
+    const n = Number(place);
+    p.place = Number.isInteger(n) && n >= 1 && n <= max ? n : null;
+    socket.emit('placeSet', { place: p.place });
+    io.to(roomId).emit('state', publicState(room));
+  });
+
+  // Set this player's cards-remaining-at-end (an array of card codes, possibly
+  // empty). Raw list only — no combo classification, since a leftover hand isn't
+  // a play.
+  socket.on('setCardsRemaining', ({ cards }) => {
+    const room = getRoom(roomId);
+    const p = room.players[socket.id];
+    if (!p || !room.settings) return;
+    p.cardsRemaining = Array.isArray(cards) ? cards.slice(0, 54) : [];
+    socket.emit('cardsRemainingSet', { count: p.cardsRemaining.length });
     io.to(roomId).emit('state', publicState(room));
   });
 
@@ -261,7 +293,7 @@ io.on('connection', (socket) => {
 
     room.settings = null;
     room.gameId = null;
-    for (const p of Object.values(room.players)) p.turns = [];
+    for (const p of Object.values(room.players)) { p.turns = []; p.place = null; p.cardsRemaining = []; }
     io.to(roomId).emit('turnsReplaced', []);
     io.to(roomId).emit('state', publicState(room));
   });

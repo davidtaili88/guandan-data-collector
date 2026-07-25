@@ -128,10 +128,12 @@ input[type="text"]:focus { outline: none; border-color: var(--accent); }
 }
 @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 
-.deck-panel, .selection-box, .log-box, .players-box, .relations-box {
+.deck-panel, .selection-box, .log-box, .players-box, .relations-box, .place-box {
   background: var(--panel); border: 1px solid var(--line);
   border-radius: 12px; padding: 16px;
 }
+.place-box .seg-group { flex-wrap: wrap; margin-top: 4px; }
+.place-box .seg { flex: 0 1 auto; min-width: 48px; }
 .relations-box .field-label { margin-top: 10px; }
 .relations-box input[type="text"] { margin-bottom: 4px; }
 .side-panel { display: flex; flex-direction: column; gap: 14px; }

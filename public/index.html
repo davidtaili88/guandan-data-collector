@@ -84,6 +84,19 @@
         <ul id="player-list" class="player-list"></ul>
       </div>
 
+      <div id="place-box" class="place-box hidden">
+        <h3>Your finishing place</h3>
+        <div id="place-group" class="seg-group"></div>
+        <p class="hint-text">Set this when you finish, before the host saves. Left blank if the game is abandoned.</p>
+
+        <h3 style="margin-top:14px">Cards remaining at end</h3>
+        <p class="hint-text">Select the cards left in your hand on the deck above, then set them here. None if you finished.</p>
+        <div class="action-row">
+          <button id="remaining-btn" class="ghost wide">Set cards remaining (<span id="remaining-sel">0</span>)</button>
+        </div>
+        <p id="remaining-status" class="hint-text"></p>
+      </div>
+
       <div class="relations-box">
         <h3>Your teammates / enemies <span class="muted">(optional)</span></h3>
         <label class="field-label" for="teammates-input">Teammates</label>

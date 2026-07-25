@@ -48,6 +48,10 @@ socket.on('state', (state) => {
     if (me.enemies?.length) $('enemies-input').value = me.enemies.join(', ');
   }
 
+  // Finishing-place picker: show while a game is running, buttons 1..playerCount.
+  $('place-box').classList.toggle('hidden', !(joined && settings));
+  if (joined && settings) renderPlacePicker(settings.playerCount, me?.place ?? null);
+
   if (settings) renderDeck();
 });
 
@@ -227,6 +231,10 @@ function renderSelection() {
   const box = $('selected-cards');
   box.innerHTML = '';
 
+  // Keep the "Set cards remaining (N)" button in sync with the live selection.
+  const remSel = $('remaining-sel');
+  if (remSel) remSel.textContent = selected.length;
+
   if (!selected.length) {
     box.innerHTML = '<span class="muted">Click cards to add them here</span>';
     $('combo-readout').innerHTML = '';
@@ -352,6 +360,43 @@ socket.on('relationsSet', ({ teammates, enemies }) => {
   $('enemies-input').value = enemies.join(', ');
   $('relations-status').textContent = 'Saved.';
   setTimeout(() => ($('relations-status').textContent = ''), 2000);
+});
+
+// ---------- Finishing place ----------
+const PLACE_LABEL = { 1: '1st', 2: '2nd', 3: '3rd', 4: '4th', 5: '5th', 6: '6th' };
+
+// Buttons 1..count; clicking one (or the already-selected one again) toggles it.
+function renderPlacePicker(count, current) {
+  const wrap = $('place-group');
+  wrap.innerHTML = '';
+  for (let n = 1; n <= count; n++) {
+    const b = document.createElement('button');
+    b.className = 'seg' + (current === n ? ' active' : '');
+    b.textContent = PLACE_LABEL[n];
+    b.addEventListener('click', () => {
+      // Click the active one to clear it back to null (unknown/abandoned).
+      socket.emit('setPlace', { place: current === n ? null : n });
+    });
+    wrap.appendChild(b);
+  }
+}
+
+socket.on('placeSet', () => {
+  // State broadcast re-renders the picker with the new active button.
+});
+
+// ---------- Cards remaining at end ----------
+// Reuses the deck selection: whatever is selected becomes the leftover hand.
+$('remaining-btn').addEventListener('click', () => {
+  socket.emit('setCardsRemaining', { cards: [...selected] });
+});
+
+socket.on('cardsRemainingSet', ({ count }) => {
+  $('remaining-status').textContent = count
+    ? `Saved ${count} card${count === 1 ? '' : 's'} as your remaining hand.`
+    : 'Saved — no cards remaining (finished).';
+  clearSelection();
+  setTimeout(() => ($('remaining-status').textContent = ''), 3000);
 });
 
 // Abandon = leave the current game early. Three outcomes: save the partial hand

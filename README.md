@@ -4,7 +4,7 @@ Web UI for recording every hand played in games of Guandan (掼蛋), so the data
 be analysed later in Python.
 
 
-git token: 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
+git token: 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
 
 ## Running
 
@@ -62,6 +62,8 @@ means tricks can't be reconstructed across players.
       "name": "David",
       "teammates": ["Kevin"],
       "enemies": ["Amy", "Sam"],
+      "place": 1,
+      "cardsRemaining": [],
       "turns": [
         { "turn": 1, "action": "play", "cards": ["S5","H5","D5","C5"],
           "combo": "bomb4", "comboRank": 5, "usedWildcards": [] },
@@ -80,6 +82,12 @@ means tricks can't be reconstructed across players.
 - **`teammates` / `enemies`** — self-reported name lists per player, both optional
   (may be empty). Entered on the site; carried on both complete and abandoned
   records so partner/opponent context survives even when a game doesn't finish.
+- **`place`** — finishing position (1..playerCount), set by each player at game
+  end. `null` if not entered or the game was abandoned (→ `NaN` in the loader's
+  `place` column).
+- **`cardsRemaining`** — the cards still in the player's hand at game end, as raw
+  codes (empty if they finished). Not classified — it's a leftover hand, not a
+  play. Loader exposes `cards_remaining` and `n_cards_remaining`.
 - **`gameNo`** — human-friendly sequence, `"<variant>.<n>"`: the nth game of the
   4- or 6-player variant (e.g. `4.7`). Also the filename. Counted from the data
   repo so it survives Render restarts; override in `storage.js` (`GAMENO_OVERRIDE`
