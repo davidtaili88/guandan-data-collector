@@ -51,8 +51,9 @@ socket.on('state', (state) => {
   if (settings) renderDeck();
 });
 
-socket.on('turnRecorded', () => {
+socket.on('turnRecorded', (turns) => {
   clearSelection();
+  renderTurnLog(turns); // refresh log, count, and undo-button enabled state
 });
 
 socket.on('turnsReplaced', (turns) => {

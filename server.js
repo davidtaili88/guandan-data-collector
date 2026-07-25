@@ -224,7 +224,9 @@ io.on('connection', (socket) => {
         usedWildcards: c.usedWildcards,
       });
     }
-    socket.emit('turnRecorded', p.turns[p.turns.length - 1]);
+    // Send the full turns array so the client re-renders its log (and the undo
+    // button / count) from authoritative state, not just the delta.
+    socket.emit('turnRecorded', p.turns);
     io.to(roomId).emit('state', publicState(room));
   });
 
