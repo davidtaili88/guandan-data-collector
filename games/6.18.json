@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-03T10-01-59-ntni",
+  "playerCount": 6,
+  "rankCard": "8",
+  "date": "2026-08-03",
+  "status": "complete",
+  "startedAt": "2026-08-03T10:01:59.213Z",
+  "endedAt": "2026-08-03T10:13:06.534Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 6,
+      "cardsRemaining": [
+        "DJ",
+        "SJ",
+        "SA"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "pass"
+        },
+        {
+          "turn": 2,
+          "action": "pass"
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "pass"
+        },
+        {
+          "turn": 5,
+          "action": "pass"
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "pass"
+        },
+        {
+          "turn": 12,
+          "action": "pass"
+        },
+        {
+          "turn": 13,
+          "action": "pass"
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "pass"
+        },
+        {
+          "turn": 16,
+          "action": "pass"
+        },
+        {
+          "turn": 17,
+          "action": "play",
+          "cards": [
+            "H8",
+            "HK",
+            "CK",
+            "ST",
+            "HT"
+          ],
+          "combo": "hung",
+          "comboRank": 13,
+          "usedWildcards": [
+            "H8"
+          ]
+        },
+        {
+          "turn": 18,
+          "action": "play",
+          "cards": [
+            "D3",
+            "D3",
+            "H3",
+            "H4",
+            "D4",
+            "C4"
+          ],
+          "combo": "steelBoard",
+          "comboRank": 4,
+          "usedWildcards": []
+        },
+        {
+          "turn": 19,
+          "action": "play",
+          "cards": [
+            "H5",
+            "D5",
+            "D6",
+            "H6",
+            "D7",
+            "C7"
+          ],
+          "combo": "tractor",
+          "comboRank": 7,
+          "usedWildcards": []
+        },
+        {
+          "turn": 20,
+          "action": "play",
+          "cards": [
+            "D7",
+            "D8",
+            "D9",
+            "DT",
+            "DJ"
+          ],
+          "combo": "tongHuaShun",
+          "comboRank": 11,
+          "usedWildcards": []
+        },
+        {
+          "turn": 21,
+          "action": "play",
+          "cards": [
+            "S2"
+          ],
+          "combo": "single",
+          "comboRank": 2,
+          "usedWildcards": []
+        },
+        {
+          "turn": 22,
+          "action": "pass"
+        },
+        {
+          "turn": 23,
+          "action": "play",
+          "cards": [
+            "SA"
+          ],
+          "combo": "single",
+          "comboRank": 14,
+          "usedWildcards": []
+        }
+      ]
+    }
+  ],
+  "gameNo": "6.18",
+  "fileName": "6.18.json"
+}
