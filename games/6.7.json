@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-03T07-28-09-lg2n",
+  "playerCount": 6,
+  "rankCard": "A",
+  "date": "2026-08-03",
+  "status": "complete",
+  "startedAt": "2026-08-03T07:28:09.220Z",
+  "endedAt": "2026-08-03T07:35:21.336Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 6,
+      "cardsRemaining": [
+        "SK",
+        "CK",
+        "HK",
+        "ST",
+        "CT",
+        "S8",
+        "S8",
+        "C8",
+        "H8",
+        "C5",
+        "H4",
+        "H4",
+        "C4",
+        "S3",
+        "C3",
+        "H2",
+        "D2",
+        "HA"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "play",
+          "cards": [
+            "DQ"
+          ],
+          "combo": "single",
+          "comboRank": 12,
+          "usedWildcards": []
+        },
+        {
+          "turn": 2,
+          "action": "pass"
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "play",
+          "cards": [
+            "SQ"
+          ],
+          "combo": "single",
+          "comboRank": 12,
+          "usedWildcards": []
+        },
+        {
+          "turn": 5,
+          "action": "play",
+          "cards": [
+            "S7",
+            "S7",
+            "H7",
+            "D7"
+          ],
+          "combo": "bomb4",
+          "comboRank": 7,
+          "usedWildcards": []
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "pass"
+        },
+        {
+          "turn": 12,
+          "action": "pass"
+        },
+        {
+          "turn": 13,
+          "action": "play",
+          "cards": [
+            "DA"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "play",
+          "cards": [
+            "S9",
+            "D9"
+          ],
+          "combo": "pair",
+          "comboRank": 9,
+          "usedWildcards": []
+        },
+        {
+          "turn": 16,
+          "action": "pass"
+        }
+      ]
+    }
+  ],
+  "gameNo": "6.7",
+  "fileName": "6.7.json"
+}
