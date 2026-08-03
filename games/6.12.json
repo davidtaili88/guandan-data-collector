@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-03T08-32-42-wlgx",
+  "playerCount": 6,
+  "rankCard": "6",
+  "date": "2026-08-03",
+  "status": "complete",
+  "startedAt": "2026-08-03T08:32:42.850Z",
+  "endedAt": "2026-08-03T08:43:17.063Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 1,
+      "cardsRemaining": [],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "pass"
+        },
+        {
+          "turn": 2,
+          "action": "pass"
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "pass"
+        },
+        {
+          "turn": 5,
+          "action": "pass"
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "play",
+          "cards": [
+            "SA"
+          ],
+          "combo": "single",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "play",
+          "cards": [
+            "S6"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "play",
+          "cards": [
+            "D6",
+            "C6"
+          ],
+          "combo": "pair",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 12,
+          "action": "play",
+          "cards": [
+            "H2"
+          ],
+          "combo": "single",
+          "comboRank": 2,
+          "usedWildcards": []
+        },
+        {
+          "turn": 13,
+          "action": "play",
+          "cards": [
+            "RJ"
+          ],
+          "combo": "single",
+          "comboRank": 17,
+          "usedWildcards": []
+        },
+        {
+          "turn": 14,
+          "action": "play",
+          "cards": [
+            "S3",
+            "C3"
+          ],
+          "combo": "pair",
+          "comboRank": 3,
+          "usedWildcards": []
+        },
+        {
+          "turn": 15,
+          "action": "pass"
+        },
+        {
+          "turn": 16,
+          "action": "play",
+          "cards": [
+            "SJ",
+            "CJ",
+            "HJ",
+            "D5",
+            "C5"
+          ],
+          "combo": "hung",
+          "comboRank": 11,
+          "usedWildcards": []
+        },
+        {
+          "turn": 17,
+          "action": "play",
+          "cards": [
+            "HQ",
+            "DQ",
+            "SQ",
+            "SQ"
+          ],
+          "combo": "bomb4",
+          "comboRank": 12,
+          "usedWildcards": []
+        },
+        {
+          "turn": 18,
+          "action": "play",
+          "cards": [
+            "C7",
+            "D7",
+            "S7",
+            "HK",
+            "DK"
+          ],
+          "combo": "hung",
+          "comboRank": 7,
+          "usedWildcards": []
+        }
+      ]
+    }
+  ],
+  "gameNo": "6.12",
+  "fileName": "6.12.json"
+}
