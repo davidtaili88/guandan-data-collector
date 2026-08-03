@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-03T04-59-51-vw5i",
+  "playerCount": 4,
+  "rankCard": "5",
+  "date": "2026-08-03",
+  "status": "complete",
+  "startedAt": "2026-08-03T04:59:51.685Z",
+  "endedAt": "2026-08-03T05:10:27.355Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 4,
+      "cardsRemaining": [],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "play",
+          "cards": [
+            "S3",
+            "H3",
+            "D3",
+            "S4",
+            "C4",
+            "H4"
+          ],
+          "combo": "steelBoard",
+          "comboRank": 4,
+          "usedWildcards": []
+        },
+        {
+          "turn": 2,
+          "action": "play",
+          "cards": [
+            "CQ",
+            "CQ",
+            "DQ",
+            "DK",
+            "HK",
+            "CK"
+          ],
+          "combo": "steelBoard",
+          "comboRank": 13,
+          "usedWildcards": []
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "pass"
+        },
+        {
+          "turn": 5,
+          "action": "pass"
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "pass"
+        },
+        {
+          "turn": 12,
+          "action": "pass"
+        },
+        {
+          "turn": 13,
+          "action": "play",
+          "cards": [
+            "SA",
+            "CA"
+          ],
+          "combo": "pair",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "pass"
+        },
+        {
+          "turn": 16,
+          "action": "pass"
+        },
+        {
+          "turn": 17,
+          "action": "pass"
+        },
+        {
+          "turn": 18,
+          "action": "play",
+          "cards": [
+            "S5"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        }
+      ]
+    }
+  ],
+  "gameNo": "4.9",
+  "fileName": "4.9.json"
+}
