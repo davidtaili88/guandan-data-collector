@@ -1,0 +1,201 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-03T04-41-42-0fu6",
+  "playerCount": 4,
+  "rankCard": "2",
+  "date": "2026-08-03",
+  "status": "complete",
+  "startedAt": "2026-08-03T04:41:42.841Z",
+  "endedAt": "2026-08-03T04:51:31.083Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 2,
+      "cardsRemaining": [],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "play",
+          "cards": [
+            "S7",
+            "C7"
+          ],
+          "combo": "pair",
+          "comboRank": 7,
+          "usedWildcards": []
+        },
+        {
+          "turn": 2,
+          "action": "play",
+          "cards": [
+            "CK",
+            "SK"
+          ],
+          "combo": "pair",
+          "comboRank": 13,
+          "usedWildcards": []
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "pass"
+        },
+        {
+          "turn": 5,
+          "action": "play",
+          "cards": [
+            "C6"
+          ],
+          "combo": "single",
+          "comboRank": 6,
+          "usedWildcards": []
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "play",
+          "cards": [
+            "D5",
+            "D5",
+            "H5",
+            "C5"
+          ],
+          "combo": "bomb4",
+          "comboRank": 5,
+          "usedWildcards": []
+        },
+        {
+          "turn": 10,
+          "action": "play",
+          "cards": [
+            "H4",
+            "S4"
+          ],
+          "combo": "pair",
+          "comboRank": 4,
+          "usedWildcards": []
+        },
+        {
+          "turn": 11,
+          "action": "play",
+          "cards": [
+            "DA",
+            "HA"
+          ],
+          "combo": "pair",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 12,
+          "action": "pass"
+        },
+        {
+          "turn": 13,
+          "action": "pass"
+        },
+        {
+          "turn": 14,
+          "action": "play",
+          "cards": [
+            "HT"
+          ],
+          "combo": "single",
+          "comboRank": 10,
+          "usedWildcards": []
+        },
+        {
+          "turn": 15,
+          "action": "pass"
+        },
+        {
+          "turn": 16,
+          "action": "play",
+          "cards": [
+            "C2"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 17,
+          "action": "pass"
+        },
+        {
+          "turn": 18,
+          "action": "play",
+          "cards": [
+            "S8",
+            "S9",
+            "HT",
+            "CJ",
+            "HQ"
+          ],
+          "combo": "straight",
+          "comboRank": 12,
+          "usedWildcards": []
+        },
+        {
+          "turn": 19,
+          "action": "play",
+          "cards": [
+            "D2"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 20,
+          "action": "play",
+          "cards": [
+            "H3"
+          ],
+          "combo": "single",
+          "comboRank": 3,
+          "usedWildcards": []
+        },
+        {
+          "turn": 21,
+          "action": "pass"
+        },
+        {
+          "turn": 22,
+          "action": "play",
+          "cards": [
+            "D6",
+            "H2",
+            "D8",
+            "D9",
+            "DT"
+          ],
+          "combo": "tongHuaShun",
+          "comboRank": 10,
+          "usedWildcards": [
+            "H2"
+          ]
+        }
+      ]
+    }
+  ],
+  "gameNo": "4.7",
+  "fileName": "4.7.json"
+}
