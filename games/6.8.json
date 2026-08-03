@@ -1,0 +1,233 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-03T07-35-43-a2g9",
+  "playerCount": 6,
+  "rankCard": "K",
+  "date": "2026-08-03",
+  "status": "complete",
+  "startedAt": "2026-08-03T07:35:43.039Z",
+  "endedAt": "2026-08-03T07:48:06.188Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 4,
+      "cardsRemaining": [],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "play",
+          "cards": [
+            "C7"
+          ],
+          "combo": "single",
+          "comboRank": 7,
+          "usedWildcards": []
+        },
+        {
+          "turn": 2,
+          "action": "pass"
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "pass"
+        },
+        {
+          "turn": 5,
+          "action": "pass"
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "play",
+          "cards": [
+            "SQ"
+          ],
+          "combo": "single",
+          "comboRank": 12,
+          "usedWildcards": []
+        },
+        {
+          "turn": 12,
+          "action": "play",
+          "cards": [
+            "S8",
+            "S8",
+            "D8",
+            "D8"
+          ],
+          "combo": "bomb4",
+          "comboRank": 8,
+          "usedWildcards": []
+        },
+        {
+          "turn": 13,
+          "action": "play",
+          "cards": [
+            "C2",
+            "D2"
+          ],
+          "combo": "pair",
+          "comboRank": 2,
+          "usedWildcards": []
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "pass"
+        },
+        {
+          "turn": 16,
+          "action": "pass"
+        },
+        {
+          "turn": 17,
+          "action": "play",
+          "cards": [
+            "H7"
+          ],
+          "combo": "single",
+          "comboRank": 7,
+          "usedWildcards": []
+        },
+        {
+          "turn": 18,
+          "action": "play",
+          "cards": [
+            "SK"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 19,
+          "action": "pass"
+        },
+        {
+          "turn": 20,
+          "action": "pass"
+        },
+        {
+          "turn": 21,
+          "action": "play",
+          "cards": [
+            "S5",
+            "S5",
+            "D5",
+            "D4",
+            "D4",
+            "S4"
+          ],
+          "combo": "steelBoard",
+          "comboRank": 5,
+          "usedWildcards": []
+        },
+        {
+          "turn": 22,
+          "action": "play",
+          "cards": [
+            "CK"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 23,
+          "action": "play",
+          "cards": [
+            "H9"
+          ],
+          "combo": "single",
+          "comboRank": 9,
+          "usedWildcards": []
+        },
+        {
+          "turn": 24,
+          "action": "play",
+          "cards": [
+            "D9"
+          ],
+          "combo": "single",
+          "comboRank": 9,
+          "usedWildcards": []
+        },
+        {
+          "turn": 25,
+          "action": "play",
+          "cards": [
+            "CT"
+          ],
+          "combo": "single",
+          "comboRank": 10,
+          "usedWildcards": []
+        },
+        {
+          "turn": 26,
+          "action": "play",
+          "cards": [
+            "ST"
+          ],
+          "combo": "single",
+          "comboRank": 10,
+          "usedWildcards": []
+        },
+        {
+          "turn": 27,
+          "action": "play",
+          "cards": [
+            "SA"
+          ],
+          "combo": "single",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 28,
+          "action": "play",
+          "cards": [
+            "H6",
+            "D6",
+            "C6",
+            "C3",
+            "C3"
+          ],
+          "combo": "hung",
+          "comboRank": 6,
+          "usedWildcards": []
+        }
+      ]
+    }
+  ],
+  "gameNo": "6.8",
+  "fileName": "6.8.json"
+}
