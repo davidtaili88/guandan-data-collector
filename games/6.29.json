@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-06T08-20-15-gool",
+  "playerCount": 6,
+  "rankCard": "3",
+  "date": "2026-08-06",
+  "status": "complete",
+  "startedAt": "2026-08-06T08:20:15.858Z",
+  "endedAt": "2026-08-06T08:34:24.035Z",
+  "hasTeammatePlaces": true,
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [
+        "ethan",
+        "bob"
+      ],
+      "enemies": [],
+      "place": 5,
+      "teammatePlaces": {
+        "ethan": 4,
+        "bob": 3
+      },
+      "cardsRemaining": [],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "play",
+          "cards": [
+            "D3",
+            "D3",
+            "C3",
+            "C2",
+            "S2"
+          ],
+          "combo": "hung",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 2,
+          "action": "pass"
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "play",
+          "cards": [
+            "C9",
+            "C9",
+            "S9",
+            "C6",
+            "H3"
+          ],
+          "combo": "hung",
+          "comboRank": 9,
+          "usedWildcards": [
+            "H3"
+          ]
+        },
+        {
+          "turn": 5,
+          "action": "play",
+          "cards": [
+            "D6",
+            "D7",
+            "D8",
+            "D9",
+            "DT"
+          ],
+          "combo": "tongHuaShun",
+          "comboRank": 10,
+          "usedWildcards": []
+        },
+        {
+          "turn": 6,
+          "action": "play",
+          "cards": [
+            "S2",
+            "C3",
+            "C4",
+            "D5",
+            "H6"
+          ],
+          "combo": "straight",
+          "comboRank": 6,
+          "usedWildcards": []
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "pass"
+        },
+        {
+          "turn": 12,
+          "action": "pass"
+        },
+        {
+          "turn": 13,
+          "action": "play",
+          "cards": [
+            "SA"
+          ],
+          "combo": "single",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "play",
+          "cards": [
+            "BJ"
+          ],
+          "combo": "single",
+          "comboRank": 16,
+          "usedWildcards": []
+        },
+        {
+          "turn": 16,
+          "action": "pass"
+        },
+        {
+          "turn": 17,
+          "action": "play",
+          "cards": [
+            "DJ"
+          ],
+          "combo": "single",
+          "comboRank": 11,
+          "usedWildcards": []
+        },
+        {
+          "turn": 18,
+          "action": "pass"
+        },
+        {
+          "turn": 19,
+          "action": "pass"
+        },
+        {
+          "turn": 20,
+          "action": "pass"
+        },
+        {
+          "turn": 21,
+          "action": "play",
+          "cards": [
+            "DQ"
+          ],
+          "combo": "single",
+          "comboRank": 12,
+          "usedWildcards": []
+        },
+        {
+          "turn": 22,
+          "action": "play",
+          "cards": [
+            "HT"
+          ],
+          "combo": "single",
+          "comboRank": 10,
+          "usedWildcards": []
+        },
+        {
+          "turn": 23,
+          "action": "pass"
+        },
+        {
+          "turn": 24,
+          "action": "pass"
+        },
+        {
+          "turn": 25,
+          "action": "pass"
+        },
+        {
+          "turn": 26,
+          "action": "pass"
+        },
+        {
+          "turn": 27,
+          "action": "pass"
+        },
+        {
+          "turn": 28,
+          "action": "play",
+          "cards": [
+            "SA"
+          ],
+          "combo": "single",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 29,
+          "action": "play",
+          "cards": [
+            "HK"
+          ],
+          "combo": "single",
+          "comboRank": 13,
+          "usedWildcards": []
+        }
+      ]
+    }
+  ],
+  "gameNo": "6.29",
+  "fileName": "6.29.json"
+}
