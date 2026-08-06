@@ -1,0 +1,202 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-06T09-51-55-64sa",
+  "playerCount": 6,
+  "rankCard": "9",
+  "date": "2026-08-06",
+  "status": "complete",
+  "startedAt": "2026-08-06T09:51:55.586Z",
+  "endedAt": "2026-08-06T10:06:40.370Z",
+  "hasTeammatePlaces": true,
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [
+        "ethan",
+        "bob"
+      ],
+      "enemies": [],
+      "place": 6,
+      "teammatePlaces": {
+        "bob": 6,
+        "ethan": 6
+      },
+      "cardsRemaining": [
+        "D8"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "pass"
+        },
+        {
+          "turn": 2,
+          "action": "pass"
+        },
+        {
+          "turn": 3,
+          "action": "play",
+          "cards": [
+            "CJ",
+            "DJ",
+            "SJ",
+            "H5",
+            "C5"
+          ],
+          "combo": "hung",
+          "comboRank": 11,
+          "usedWildcards": []
+        },
+        {
+          "turn": 4,
+          "action": "play",
+          "cards": [
+            "S6",
+            "C6",
+            "SK",
+            "SK",
+            "HK"
+          ],
+          "combo": "hung",
+          "comboRank": 13,
+          "usedWildcards": []
+        },
+        {
+          "turn": 5,
+          "action": "pass"
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "play",
+          "cards": [
+            "D7",
+            "D7",
+            "D7",
+            "H7"
+          ],
+          "combo": "bomb4",
+          "comboRank": 7,
+          "usedWildcards": []
+        },
+        {
+          "turn": 8,
+          "action": "play",
+          "cards": [
+            "S3"
+          ],
+          "combo": "single",
+          "comboRank": 3,
+          "usedWildcards": []
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "pass"
+        },
+        {
+          "turn": 12,
+          "action": "play",
+          "cards": [
+            "ST",
+            "ST",
+            "CT",
+            "HT"
+          ],
+          "combo": "bomb4",
+          "comboRank": 10,
+          "usedWildcards": []
+        },
+        {
+          "turn": 13,
+          "action": "play",
+          "cards": [
+            "C2",
+            "C2",
+            "D2"
+          ],
+          "combo": "triple",
+          "comboRank": 2,
+          "usedWildcards": []
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "pass"
+        },
+        {
+          "turn": 16,
+          "action": "pass"
+        },
+        {
+          "turn": 17,
+          "action": "pass"
+        },
+        {
+          "turn": 18,
+          "action": "pass"
+        },
+        {
+          "turn": 19,
+          "action": "pass"
+        },
+        {
+          "turn": 20,
+          "action": "play",
+          "cards": [
+            "BJ"
+          ],
+          "combo": "single",
+          "comboRank": 16,
+          "usedWildcards": []
+        },
+        {
+          "turn": 21,
+          "action": "play",
+          "cards": [
+            "D9"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 22,
+          "action": "play",
+          "cards": [
+            "CA"
+          ],
+          "combo": "single",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 23,
+          "action": "play",
+          "cards": [
+            "HQ"
+          ],
+          "combo": "single",
+          "comboRank": 12,
+          "usedWildcards": []
+        }
+      ]
+    }
+  ],
+  "gameNo": "6.33",
+  "fileName": "6.33.json"
+}
