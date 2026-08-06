@@ -1,0 +1,208 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-06T07-28-58-nw33",
+  "playerCount": 6,
+  "rankCard": "2",
+  "date": "2026-08-06",
+  "status": "complete",
+  "startedAt": "2026-08-06T07:28:58.886Z",
+  "endedAt": "2026-08-06T07:40:47.423Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 6,
+      "cardsRemaining": [
+        "SJ"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "play",
+          "cards": [
+            "S8",
+            "H8"
+          ],
+          "combo": "pair",
+          "comboRank": 8,
+          "usedWildcards": []
+        },
+        {
+          "turn": 2,
+          "action": "pass"
+        },
+        {
+          "turn": 3,
+          "action": "play",
+          "cards": [
+            "HA"
+          ],
+          "combo": "single",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 4,
+          "action": "play",
+          "cards": [
+            "S6",
+            "H6",
+            "C6",
+            "C6"
+          ],
+          "combo": "bomb4",
+          "comboRank": 6,
+          "usedWildcards": []
+        },
+        {
+          "turn": 5,
+          "action": "pass"
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "play",
+          "cards": [
+            "SA",
+            "CA"
+          ],
+          "combo": "pair",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "play",
+          "cards": [
+            "C9"
+          ],
+          "combo": "single",
+          "comboRank": 9,
+          "usedWildcards": []
+        },
+        {
+          "turn": 11,
+          "action": "pass"
+        },
+        {
+          "turn": 12,
+          "action": "pass"
+        },
+        {
+          "turn": 13,
+          "action": "pass"
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "pass"
+        },
+        {
+          "turn": 16,
+          "action": "play",
+          "cards": [
+            "D2"
+          ],
+          "combo": "single",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 17,
+          "action": "pass"
+        },
+        {
+          "turn": 18,
+          "action": "pass"
+        },
+        {
+          "turn": 19,
+          "action": "play",
+          "cards": [
+            "HQ",
+            "HQ",
+            "CQ",
+            "DQ"
+          ],
+          "combo": "bomb4",
+          "comboRank": 12,
+          "usedWildcards": []
+        },
+        {
+          "turn": 20,
+          "action": "play",
+          "cards": [
+            "D3",
+            "H4",
+            "S5",
+            "D6",
+            "D7"
+          ],
+          "combo": "straight",
+          "comboRank": 7,
+          "usedWildcards": []
+        },
+        {
+          "turn": 21,
+          "action": "play",
+          "cards": [
+            "H5",
+            "H2",
+            "D7",
+            "S8",
+            "H9"
+          ],
+          "combo": "straight",
+          "comboRank": 9,
+          "usedWildcards": [
+            "H2"
+          ]
+        },
+        {
+          "turn": 22,
+          "action": "play",
+          "cards": [
+            "HK"
+          ],
+          "combo": "single",
+          "comboRank": 13,
+          "usedWildcards": []
+        },
+        {
+          "turn": 23,
+          "action": "pass"
+        },
+        {
+          "turn": 24,
+          "action": "pass"
+        },
+        {
+          "turn": 25,
+          "action": "pass"
+        },
+        {
+          "turn": 26,
+          "action": "pass"
+        }
+      ]
+    }
+  ],
+  "gameNo": "6.26",
+  "fileName": "6.26.json"
+}
