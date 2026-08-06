@@ -368,9 +368,10 @@ function deleteCombo(id) {
 
 $('save-combo-btn').addEventListener('click', () => {
   if (!selected.length) return;
+  // One click, no prompt: name it from the detected combo (blank if unknown, in
+  // which case the label falls back to the live classification when rendered).
   const cls = settings ? classify(selected, settings.rankCard) : null;
-  const suggested = cls && cls.combo !== 'unknown' ? cls.label : '';
-  const name = (prompt('Name this combo (optional):', suggested) ?? '').trim();
+  const name = cls && cls.combo !== 'unknown' ? cls.label : '';
   const combos = loadCombos();
   combos.push({
     id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),

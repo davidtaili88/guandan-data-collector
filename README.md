@@ -31,8 +31,8 @@ room. Default room is `main`.
 4. The host clicks **End & save game** to persist it.
 
 **Saved combos.** Recurring hands can be stored as one-click presets. Select the
-cards, click **Save selection as combo**, and it appears under **Saved combos** in
-the side panel. Clicking a saved combo **records that play immediately** (Undo is
+cards, click **Save selection as combo** (one click — it's auto-named from the
+detected combo), and it appears under **Saved combos** in the side panel. Clicking a saved combo **records that play immediately** (Undo is
 still available if you misclick). Combos are card-specific and stored per-browser
 in `localStorage` (keyed by room, like your name), so they persist across games and
 reloads but stay private to your device.
