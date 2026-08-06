@@ -1,0 +1,200 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-06T03-50-03-lbwy",
+  "playerCount": 6,
+  "rankCard": "2",
+  "date": "2026-08-06",
+  "status": "complete",
+  "startedAt": "2026-08-06T03:50:03.241Z",
+  "endedAt": "2026-08-06T04:00:40.886Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 3,
+      "cardsRemaining": [],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "pass"
+        },
+        {
+          "turn": 2,
+          "action": "play",
+          "cards": [
+            "D4",
+            "S5",
+            "S6",
+            "C7",
+            "S8"
+          ],
+          "combo": "straight",
+          "comboRank": 8,
+          "usedWildcards": []
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "play",
+          "cards": [
+            "SK"
+          ],
+          "combo": "single",
+          "comboRank": 13,
+          "usedWildcards": []
+        },
+        {
+          "turn": 5,
+          "action": "pass"
+        },
+        {
+          "turn": 6,
+          "action": "pass"
+        },
+        {
+          "turn": 7,
+          "action": "pass"
+        },
+        {
+          "turn": 8,
+          "action": "pass"
+        },
+        {
+          "turn": 9,
+          "action": "pass"
+        },
+        {
+          "turn": 10,
+          "action": "pass"
+        },
+        {
+          "turn": 11,
+          "action": "pass"
+        },
+        {
+          "turn": 12,
+          "action": "pass"
+        },
+        {
+          "turn": 13,
+          "action": "play",
+          "cards": [
+            "CK"
+          ],
+          "combo": "single",
+          "comboRank": 13,
+          "usedWildcards": []
+        },
+        {
+          "turn": 14,
+          "action": "pass"
+        },
+        {
+          "turn": 15,
+          "action": "pass"
+        },
+        {
+          "turn": 16,
+          "action": "play",
+          "cards": [
+            "ST"
+          ],
+          "combo": "single",
+          "comboRank": 10,
+          "usedWildcards": []
+        },
+        {
+          "turn": 17,
+          "action": "play",
+          "cards": [
+            "CA",
+            "H2",
+            "C3",
+            "C4",
+            "C5"
+          ],
+          "combo": "tongHuaShun",
+          "comboRank": 5,
+          "usedWildcards": [
+            "H2"
+          ]
+        },
+        {
+          "turn": 18,
+          "action": "play",
+          "cards": [
+            "C7",
+            "C8",
+            "D9",
+            "HT",
+            "HJ"
+          ],
+          "combo": "straight",
+          "comboRank": 11,
+          "usedWildcards": []
+        },
+        {
+          "turn": 19,
+          "action": "play",
+          "cards": [
+            "DJ",
+            "HJ"
+          ],
+          "combo": "pair",
+          "comboRank": 11,
+          "usedWildcards": []
+        },
+        {
+          "turn": 20,
+          "action": "play",
+          "cards": [
+            "HQ",
+            "DQ"
+          ],
+          "combo": "pair",
+          "comboRank": 12,
+          "usedWildcards": []
+        },
+        {
+          "turn": 21,
+          "action": "play",
+          "cards": [
+            "S2",
+            "D2"
+          ],
+          "combo": "pair",
+          "comboRank": 15,
+          "usedWildcards": []
+        },
+        {
+          "turn": 22,
+          "action": "play",
+          "cards": [
+            "BJ",
+            "BJ"
+          ],
+          "combo": "pair",
+          "comboRank": 16,
+          "usedWildcards": []
+        },
+        {
+          "turn": 23,
+          "action": "play",
+          "cards": [
+            "D9"
+          ],
+          "combo": "single",
+          "comboRank": 9,
+          "usedWildcards": []
+        }
+      ]
+    }
+  ],
+  "gameNo": "6.19",
+  "fileName": "6.19.json"
+}
