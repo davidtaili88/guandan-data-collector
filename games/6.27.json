@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "gameId": "2026-08-06T07-45-00-75vn",
+  "playerCount": 6,
+  "rankCard": "3",
+  "date": "2026-08-06",
+  "status": "complete",
+  "startedAt": "2026-08-06T07:45:00.710Z",
+  "endedAt": "2026-08-06T08:02:18.226Z",
+  "players": [
+    {
+      "seat": 0,
+      "name": "paggity",
+      "teammates": [],
+      "enemies": [],
+      "place": 1,
+      "cardsRemaining": [],
+      "turns": [
+        {
+          "turn": 1,
+          "action": "play",
+          "cards": [
+            "H8",
+            "D8",
+            "D8",
+            "H9",
+            "H9"
+          ],
+          "combo": "hung",
+          "comboRank": 8,
+          "usedWildcards": []
+        },
+        {
+          "turn": 2,
+          "action": "play",
+          "cards": [
+            "DK",
+            "DK",
+            "CK",
+            "CT",
+            "ST"
+          ],
+          "combo": "hung",
+          "comboRank": 13,
+          "usedWildcards": []
+        },
+        {
+          "turn": 3,
+          "action": "pass"
+        },
+        {
+          "turn": 4,
+          "action": "play",
+          "cards": [
+            "CA",
+            "SA",
+            "DA"
+          ],
+          "combo": "triple",
+          "comboRank": 14,
+          "usedWildcards": []
+        },
+        {
+          "turn": 5,
+          "action": "pass"
+        },
+        {
+          "turn": 6,
+          "action": "play",
+          "cards": [
+            "D7",
+            "D7",
+            "C7",
+            "H7"
+          ],
+          "combo": "bomb4",
+          "comboRank": 7,
+          "usedWildcards": []
+        },
+        {
+          "turn": 7,
+          "action": "play",
+          "cards": [
+            "S5",
+            "S6",
+            "S8",
+            "S9",
+            "H3"
+          ],
+          "combo": "tongHuaShun",
+          "comboRank": 9,
+          "usedWildcards": [
+            "H3"
+          ]
+        },
+        {
+          "turn": 8,
+          "action": "play",
+          "cards": [
+            "HJ",
+            "SJ",
+            "DJ",
+            "H4",
+            "H3"
+          ],
+          "combo": "hung",
+          "comboRank": 11,
+          "usedWildcards": [
+            "H3"
+          ]
+        }
+      ]
+    }
+  ],
+  "gameNo": "6.27",
+  "fileName": "6.27.json"
+}
