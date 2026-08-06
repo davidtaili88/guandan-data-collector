@@ -11,6 +11,11 @@ let selected = [];            // card codes currently selected, in click order
 let pendingCount = 4;
 let pendingRank = '2';
 let joinedName = localStorage.getItem('gd_name_' + roomId) || null;
+// gameId this player abandoned. While the room is still on that same game we keep
+// them on the start screen (they've left it), even though other players continue
+// and `settings` stays set. Cleared once the room moves on to a different game.
+let abandonedGameId = null;
+let currentGameId = null; // the room's active gameId, from the latest state
 
 const SUIT_GLYPH = { S: '♠', H: '♥', D: '♦', C: '♣' };
 const RED = new Set(['H', 'D']);
@@ -29,16 +34,32 @@ socket.on('connect', () => {
 socket.on('state', (state) => {
   amHost = state.hostId === socket.id;
   settings = state.settings;
+  currentGameId = state.gameId;
   renderPlayers(state.players);
   renderTopbar(state);
   renderHostSetup(state);
 
+  // Once the room advances to a different game (or none), our abandon no longer
+  // applies — rejoin the normal flow.
+  if (abandonedGameId && state.gameId !== abandonedGameId) abandonedGameId = null;
+  const inThisGame = state.gameId === abandonedGameId;
+
   const joined = state.players.some((p) => p.id === socket.id);
-  if (joined && settings) $('setup-overlay').classList.add('hidden');
+  // Treat an abandoned player as not in the game: keep them on the start screen
+  // even while the same game runs on for everyone else.
+  const active = joined && settings && !inThisGame;
+  if (active) $('setup-overlay').classList.add('hidden');
   else $('setup-overlay').classList.remove('hidden');
 
+  // Explain the start screen to a player who just abandoned a still-running game,
+  // so they know they left it and can wait for / start the next one.
+  if (inThisGame && settings) {
+    $('setup-status').textContent =
+      'You left this game. Wait for the next game to start, or start one if you host.';
+  }
+
   // Any joined player can abandon their own game while one is running.
-  $('abandon-btn').classList.toggle('hidden', !(joined && settings));
+  $('abandon-btn').classList.toggle('hidden', !active);
 
   // Reflect this player's saved relations (e.g. after a reconnect). Only fill
   // when both inputs are empty, so we never overwrite what the user is typing.
@@ -48,9 +69,9 @@ socket.on('state', (state) => {
     if (me.enemies?.length) $('enemies-input').value = me.enemies.join(', ');
   }
 
-  // Finishing-place picker: show while a game is running, buttons 1..playerCount.
-  $('place-box').classList.toggle('hidden', !(joined && settings));
-  if (joined && settings) {
+  // Finishing-place picker: show while this player is active in a game.
+  $('place-box').classList.toggle('hidden', !active);
+  if (active) {
     renderPlacePicker(settings.playerCount, me?.place ?? null);
     // A place-picker row per teammate the player has entered, so their whole
     // side's finishing order can be recorded from one device.
@@ -575,13 +596,25 @@ function hideAbandonModal() {
   $('abandon-overlay').classList.add('hidden');
 }
 
+// After abandoning, drop this player back to the start screen. Remember which
+// game they left so the next state broadcast keeps them there (see the state
+// handler); show the overlay right away rather than waiting for the round-trip.
+function leaveToStartScreen() {
+  abandonedGameId = currentGameId;
+  clearSelection();
+  $('setup-overlay').classList.remove('hidden');
+  $('abandon-btn').classList.add('hidden');
+  $('place-box').classList.add('hidden');
+  hideAbandonModal();
+}
+
 $('abandon-save').addEventListener('click', () => {
   socket.emit('abandonGame', { keep: true });
-  hideAbandonModal();
+  leaveToStartScreen();
 });
 $('abandon-discard').addEventListener('click', () => {
   socket.emit('abandonGame', { keep: false });
-  hideAbandonModal();
+  leaveToStartScreen();
 });
 $('abandon-cancel').addEventListener('click', hideAbandonModal);
 

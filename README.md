@@ -48,7 +48,8 @@ If a game breaks up before it finishes, any player can click **Abandon my game**
 and choose to **save their partial hand** (recorded as `status: "abandoned"`) or
 **discard** it. Abandoning only affects that one player — others keep playing, and
 the abandoning player is removed from the game so the host's later save won't
-double-count them.
+double-count them. After abandoning you're returned to the start screen; when the
+next game begins you're pulled back in automatically.
 
 Combos are auto-detected and shown before you record. If a selection isn't a
 legal shape it warns but still lets you save it, tagged `unknown` — data entry is
