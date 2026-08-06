@@ -30,6 +30,13 @@ room. Default room is `main`.
    in a hung; two big + two small jokers is the joker bomb.
 4. The host clicks **End & save game** to persist it.
 
+**Saved combos.** Recurring hands can be stored as one-click presets. Select the
+cards, click **Save selection as combo**, and it appears under **Saved combos** in
+the side panel. Clicking a saved combo **records that play immediately** (Undo is
+still available if you misclick). Combos are card-specific and stored per-browser
+in `localStorage` (keyed by room, like your name), so they persist across games and
+reloads but stay private to your device.
+
 If a game breaks up before it finishes, any player can click **Abandon my game**
 and choose to **save their partial hand** (recorded as `status: "abandoned"`) or
 **discard** it. Abandoning only affects that one player — others keep playing, and

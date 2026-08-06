@@ -53,6 +53,8 @@ socket.on('state', (state) => {
   if (joined && settings) renderPlacePicker(settings.playerCount, me?.place ?? null);
 
   if (settings) renderDeck();
+  // Re-render combos so their labels reflect the current game's rank card.
+  renderCombos();
 });
 
 socket.on('turnRecorded', (turns) => {
@@ -235,6 +237,9 @@ function renderSelection() {
   const remSel = $('remaining-sel');
   if (remSel) remSel.textContent = selected.length;
 
+  // The "Save selection as combo" button follows the live selection too.
+  $('save-combo-btn').disabled = selected.length === 0;
+
   if (!selected.length) {
     box.innerHTML = '<span class="muted">Click cards to add them here</span>';
     $('combo-readout').innerHTML = '';
@@ -278,6 +283,106 @@ $('pass-btn').addEventListener('click', () => {
 });
 
 $('undo-btn').addEventListener('click', () => socket.emit('undoTurn'));
+
+// ---------- Saved combos ----------
+// A saved combo is just a fixed list of card codes the user stores once from the
+// current selection, so a recurring hand can be recorded with a single click.
+// Kept per-browser in localStorage (keyed by room, like the player name) — combos
+// are card-specific presets, private to this device. Clicking one records that
+// play immediately; Undo remains available if it was a misclick.
+const combosKey = 'gd_combos_' + roomId;
+
+function loadCombos() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(combosKey));
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return []; // corrupt/absent — start fresh rather than throw.
+  }
+}
+
+function saveCombos(combos) {
+  localStorage.setItem(combosKey, JSON.stringify(combos));
+}
+
+// One mini card chip, matching the turn-log card style.
+function miniCardHtml(code) {
+  const s = suitOf(code);
+  const red = isJoker(code) ? code === 'RJ' : RED.has(s);
+  const text = isJoker(code) ? code : labelRank(rankOf(code)) + SUIT_GLYPH[s];
+  return `<span class="mini${red ? ' red' : ''}">${text}</span>`;
+}
+
+function renderCombos() {
+  const list = $('combo-list');
+  const combos = loadCombos();
+  list.innerHTML = '';
+
+  if (!combos.length) {
+    list.innerHTML = '<span class="muted">No saved combos yet. Select cards, then “Save selection as combo”.</span>';
+    return;
+  }
+
+  for (const combo of combos) {
+    const row = document.createElement('div');
+    row.className = 'combo-item';
+
+    // The main button records the play on click. Label comes from the live
+    // classifier (using the current game's rank card if one is running) so it
+    // stays correct; falls back to the stored label when no game is active.
+    const play = document.createElement('button');
+    play.className = 'combo-play';
+    const cls = settings ? classify(combo.cards, settings.rankCard) : null;
+    const label = cls && cls.combo !== 'unknown' ? cls.label : (combo.name || 'combo');
+    play.innerHTML =
+      `<span class="combo-cards">${combo.cards.map(miniCardHtml).join('')}</span>` +
+      `<span class="combo-name">${escapeHtml(label)}</span>`;
+    play.title = 'Record this play';
+    play.addEventListener('click', () => recordCombo(combo));
+
+    const del = document.createElement('button');
+    del.className = 'combo-del';
+    del.textContent = '✕';
+    del.title = 'Delete this combo';
+    del.addEventListener('click', () => deleteCombo(combo.id));
+
+    row.appendChild(play);
+    row.appendChild(del);
+    list.appendChild(row);
+  }
+}
+
+function recordCombo(combo) {
+  if (!settings) return showToast('Start a game before recording a combo.');
+  socket.emit('recordTurn', { action: 'play', cards: [...combo.cards] });
+  // The server echoes turnRecorded, which clears the selection and refreshes the
+  // log. Confirm with a toast so a single click gives visible feedback.
+  const cls = classify(combo.cards, settings.rankCard);
+  showToast(`Recorded ${cls.combo !== 'unknown' ? cls.label : 'play'} — undo if that was a misclick.`);
+}
+
+function deleteCombo(id) {
+  saveCombos(loadCombos().filter((c) => c.id !== id));
+  renderCombos();
+}
+
+$('save-combo-btn').addEventListener('click', () => {
+  if (!selected.length) return;
+  const cls = settings ? classify(selected, settings.rankCard) : null;
+  const suggested = cls && cls.combo !== 'unknown' ? cls.label : '';
+  const name = (prompt('Name this combo (optional):', suggested) ?? '').trim();
+  const combos = loadCombos();
+  combos.push({
+    id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    cards: [...selected],
+    name,
+  });
+  saveCombos(combos);
+  renderCombos();
+  showToast('Saved combo.');
+});
+
+renderCombos();
 
 // ---------- Turn log ----------
 function renderTurnLog(turns) {

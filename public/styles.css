@@ -128,7 +128,7 @@ input[type="text"]:focus { outline: none; border-color: var(--accent); }
 }
 @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 
-.deck-panel, .selection-box, .log-box, .players-box, .relations-box, .place-box {
+.deck-panel, .selection-box, .log-box, .players-box, .relations-box, .place-box, .combos-box {
   background: var(--panel); border: 1px solid var(--line);
   border-radius: 12px; padding: 16px;
 }
@@ -215,6 +215,29 @@ input[type="text"]:focus { outline: none; border-color: var(--accent); }
 .action-row { display: flex; gap: 8px; }
 .action-row .primary { flex: 2; }
 .action-row .ghost { flex: 1; }
+
+/* ---------- Saved combos ---------- */
+.combo-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.combo-item { display: flex; gap: 6px; }
+/* The big click target that records the play. */
+.combo-play {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+  background: var(--panel-2); color: var(--text);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 10px; text-align: left; min-width: 0;
+}
+.combo-play:hover { border-color: var(--green); }
+.combo-cards { display: flex; gap: 3px; flex-wrap: wrap; }
+.combo-name {
+  margin-left: auto; color: var(--muted); font-size: 11px;
+  text-transform: uppercase; letter-spacing: .03em; white-space: nowrap;
+}
+.combo-del {
+  flex-shrink: 0; width: 32px;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 8px; font-size: 12px;
+}
+.combo-del:hover { border-color: var(--red); color: var(--red); }
 
 /* ---------- Turn log ---------- */
 .turn-log {
