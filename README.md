@@ -30,6 +30,13 @@ room. Default room is `main`.
    in a hung; two big + two small jokers is the joker bomb.
 4. The host clicks **End & save game** to persist it.
 
+**Teammates' finishing places.** After entering your teammate names (in the
+teammates/enemies box), a place-picker appears for each of them under **Your
+finishing place** → *Teammates' finishing places*. Set where each teammate came so
+a whole side's order is captured even when they don't each have a device; the
+teammate you mark 1st is flagged as the first one out. Saved per player as
+`teammatePlaces`, and the game is stamped `hasTeammatePlaces`.
+
 **Saved combos.** Recurring hands can be stored as one-click presets. Select the
 cards, click **Save selection as combo** (one click — it's auto-named from the
 detected combo), and it appears under **Saved combos** in the side panel. Clicking a saved combo **records that play immediately** (Undo is
@@ -63,6 +70,7 @@ means tricks can't be reconstructed across players.
   "date": "2026-07-24",
   "status": "complete",
   "startedAt": "...", "endedAt": "...",
+  "hasTeammatePlaces": true,
   "players": [
     {
       "seat": 0,
@@ -70,6 +78,7 @@ means tricks can't be reconstructed across players.
       "teammates": ["Kevin"],
       "enemies": ["Amy", "Sam"],
       "place": 1,
+      "teammatePlaces": { "Kevin": 2 },
       "cardsRemaining": [],
       "turns": [
         { "turn": 1, "action": "play", "cards": ["S5","H5","D5","C5"],
@@ -92,6 +101,15 @@ means tricks can't be reconstructed across players.
 - **`place`** — finishing position (1..playerCount), set by each player at game
   end. `null` if not entered or the game was abandoned (→ `NaN` in the loader's
   `place` column).
+- **`teammatePlaces`** — a `{ name: place }` map of finishing positions a player
+  recorded for their **teammates**, so a whole side's order can be captured from one
+  device when teammates don't each have one. Only names in that player's
+  `teammates` list are kept; the teammate at place `1` is the first one out. The
+  loader exposes it as `teammate_places`, with `teammate_places(df)` flattening it
+  to one row per (recorder, teammate, place) and an `is_first` flag.
+- **`hasTeammatePlaces`** — game-level flag stamped `true` when any player recorded
+  teammate places. `first_teammate_places_game(df)` uses it to report the earliest
+  game number that has this data.
 - **`cardsRemaining`** — the cards still in the player's hand at game end, as raw
   codes (empty if they finished). Not classified — it's a leftover hand, not a
   play. Loader exposes `cards_remaining` and `n_cards_remaining`.

@@ -134,6 +134,14 @@ input[type="text"]:focus { outline: none; border-color: var(--accent); }
 }
 .place-box .seg-group { flex-wrap: wrap; margin-top: 4px; }
 .place-box .seg { flex: 0 1 auto; min-width: 48px; }
+
+/* Teammates' finishing places: a labelled place-picker row per teammate. */
+.teammate-places { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.tm-row { display: flex; flex-direction: column; gap: 4px; }
+.tm-name { font-size: 13px; font-weight: 650; color: var(--text); }
+.tm-first { color: var(--green); font-weight: 650; font-size: 12px; }
+.tm-places { flex-wrap: wrap; }
+.tm-places .seg { flex: 0 1 auto; min-width: 44px; }
 .relations-box .field-label { margin-top: 10px; }
 .relations-box input[type="text"] { margin-bottom: 4px; }
 .side-panel { display: flex; flex-direction: column; gap: 14px; }

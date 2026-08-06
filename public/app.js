@@ -50,7 +50,12 @@ socket.on('state', (state) => {
 
   // Finishing-place picker: show while a game is running, buttons 1..playerCount.
   $('place-box').classList.toggle('hidden', !(joined && settings));
-  if (joined && settings) renderPlacePicker(settings.playerCount, me?.place ?? null);
+  if (joined && settings) {
+    renderPlacePicker(settings.playerCount, me?.place ?? null);
+    // A place-picker row per teammate the player has entered, so their whole
+    // side's finishing order can be recorded from one device.
+    renderTeammatePlaces(me?.teammates ?? [], me?.teammatePlaces ?? {}, settings.playerCount);
+  }
 
   if (settings) renderDeck();
   // Re-render combos so their labels reflect the current game's rank card.
@@ -489,6 +494,54 @@ function renderPlacePicker(count, current) {
 
 socket.on('placeSet', () => {
   // State broadcast re-renders the picker with the new active button.
+});
+
+// ---------- Teammates' finishing places ----------
+// One row per teammate name, each a place-picker like your own. The whole map is
+// re-sent on every change so the server has authoritative { name: place } state.
+// The teammate set to 1st is, by definition, the first one out — a 🏆 marks them.
+function renderTeammatePlaces(teammates, places, count) {
+  const box = $('teammate-places-box');
+  const wrap = $('teammate-places');
+  // Only meaningful once at least one teammate name is entered.
+  box.classList.toggle('hidden', teammates.length === 0);
+  wrap.innerHTML = '';
+
+  for (const name of teammates) {
+    const current = places[name] ?? null;
+
+    const row = document.createElement('div');
+    row.className = 'tm-row';
+
+    const label = document.createElement('span');
+    label.className = 'tm-name';
+    label.textContent = name;
+    if (current === 1) label.innerHTML = `${escapeHtml(name)} <span class="tm-first">🏆 first</span>`;
+    else label.textContent = name;
+    row.appendChild(label);
+
+    const group = document.createElement('div');
+    group.className = 'seg-group tm-places';
+    for (let n = 1; n <= count; n++) {
+      const b = document.createElement('button');
+      b.className = 'seg' + (current === n ? ' active' : '');
+      b.textContent = PLACE_LABEL[n];
+      b.addEventListener('click', () => {
+        // Toggle: click the active place to clear this teammate back to unknown.
+        const next = { ...places };
+        if (current === n) delete next[name];
+        else next[name] = n;
+        socket.emit('setTeammatePlaces', { places: next });
+      });
+      group.appendChild(b);
+    }
+    row.appendChild(group);
+    wrap.appendChild(row);
+  }
+}
+
+socket.on('teammatePlacesSet', () => {
+  // State broadcast re-renders the rows with the new active buttons.
 });
 
 // ---------- Cards remaining at end ----------

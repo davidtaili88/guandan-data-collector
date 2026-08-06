@@ -68,6 +68,7 @@ function publicState(room) {
       teammates: p.teammates || [],
       enemies: p.enemies || [],
       place: p.place ?? null,
+      teammatePlaces: p.teammatePlaces || {},
       cardsRemainingCount: (p.cardsRemaining || []).length,
     })).sort((a, b) => a.seat - b.seat),
   };
@@ -91,6 +92,13 @@ function nextFreeSeat(room) {
 
 // Snapshot the whole room's game. status is 'complete' for a normal end.
 function snapshotGame(room, status = 'complete') {
+  const included = Object.values(room.players).filter((p) => p.turns.length > 0);
+  // Game-level provenance stamp: true when any included player recorded at least
+  // one teammate finishing place. Lets analysis find the first game this feature
+  // was used in without scanning every player's map.
+  const hasTeammatePlaces = included.some(
+    (p) => p.teammatePlaces && Object.keys(p.teammatePlaces).length > 0
+  );
   return {
     schema: SCHEMA_VERSION,
     gameId: room.gameId,
@@ -100,12 +108,14 @@ function snapshotGame(room, status = 'complete') {
     status,
     startedAt: room.startedAt,
     endedAt: new Date().toISOString(),
-    players: Object.values(room.players)
-      .filter((p) => p.turns.length > 0)
+    hasTeammatePlaces,
+    players: included
       .map((p) => ({
         seat: p.seat, name: p.name,
         teammates: p.teammates, enemies: p.enemies,
         place: p.place ?? null, // finishing position; null if not entered
+        // Places this player observed for their teammates: { name: place }.
+        teammatePlaces: p.teammatePlaces || {},
         cardsRemaining: p.cardsRemaining || [],
         turns: p.turns,
       }))
@@ -130,6 +140,7 @@ function snapshotPlayer(room, player) {
       seat: player.seat, name: player.name,
       teammates: player.teammates, enemies: player.enemies,
       place: null, // abandoned: player didn't finish, so no place
+      teammatePlaces: player.teammatePlaces || {}, // any teammate places recorded before abandoning
       cardsRemaining: player.cardsRemaining || [], // whatever was in hand when abandoned
       turns: player.turns,
     }],
@@ -163,6 +174,7 @@ io.on('connection', (socket) => {
         turns: [], connected: true,
         teammates: [], enemies: [], // self-reported, optional
         place: null, // finishing position, set at game end; null = unknown/abandoned
+        teammatePlaces: {}, // { teammateName: place } observed by this player
         cardsRemaining: [], // cards still in hand at game end (empty if finished)
       };
       room.players[socket.id] = p;
@@ -189,7 +201,7 @@ io.on('connection', (socket) => {
     } catch {
       room.previewNo = null;
     }
-    for (const p of Object.values(room.players)) { p.turns = []; p.place = null; p.cardsRemaining = []; }
+    for (const p of Object.values(room.players)) { p.turns = []; p.place = null; p.teammatePlaces = {}; p.cardsRemaining = []; }
     io.to(roomId).emit('state', publicState(room));
     io.to(roomId).emit('toast', `Game started — ${pc} players, rank card ${rc}`);
   });
@@ -219,6 +231,30 @@ io.on('connection', (socket) => {
     const n = Number(place);
     p.place = Number.isInteger(n) && n >= 1 && n <= max ? n : null;
     socket.emit('placeSet', { place: p.place });
+    io.to(roomId).emit('state', publicState(room));
+  });
+
+  // Set the finishing places this player observed for their TEAMMATES — a
+  // { name: place } map, so a table where not everyone has a device can still
+  // capture the whole side's finishing order. Only names in this player's
+  // teammates list are kept; a null/invalid place drops that entry. The teammate
+  // marked place 1 is, by definition, the first one out (no separate flag).
+  socket.on('setTeammatePlaces', ({ places }) => {
+    const room = getRoom(roomId);
+    const p = room.players[socket.id];
+    if (!p || !room.settings) return;
+    const max = room.settings.playerCount;
+    const allowed = new Set(p.teammates || []);
+    const out = {};
+    for (const [name, place] of Object.entries(places || {})) {
+      const key = String(name || '').trim().slice(0, 20);
+      const n = Number(place);
+      if (allowed.has(key) && Number.isInteger(n) && n >= 1 && n <= max) {
+        out[key] = n;
+      }
+    }
+    p.teammatePlaces = out;
+    socket.emit('teammatePlacesSet', { places: out });
     io.to(roomId).emit('state', publicState(room));
   });
 
@@ -293,7 +329,7 @@ io.on('connection', (socket) => {
 
     room.settings = null;
     room.gameId = null;
-    for (const p of Object.values(room.players)) { p.turns = []; p.place = null; p.cardsRemaining = []; }
+    for (const p of Object.values(room.players)) { p.turns = []; p.place = null; p.teammatePlaces = {}; p.cardsRemaining = []; }
     io.to(roomId).emit('turnsReplaced', []);
     io.to(roomId).emit('state', publicState(room));
   });

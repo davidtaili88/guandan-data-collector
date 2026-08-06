@@ -116,6 +116,14 @@ def load_turns(
                         # Self-reported relationships (may be empty lists).
                         "teammates": player.get("teammates", []),
                         "enemies": player.get("enemies", []),
+                        # Finishing places this player recorded for their
+                        # teammates: {name: place}. Empty dict when the feature
+                        # wasn't used. game-level 'has_teammate_places' below is
+                        # the flag the collector stamps when any player used it.
+                        "teammate_places": player.get("teammatePlaces") or {},
+                        "has_teammate_places": bool(
+                            game.get("hasTeammatePlaces", False)
+                        ),
                         # Finishing place (1..playerCount). NaN when not entered
                         # or the game was abandoned. Kept as a float column so the
                         # NaN is representable.
@@ -222,6 +230,46 @@ def explode_cards(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------- summaries
+
+def first_teammate_places_game(df: pd.DataFrame) -> str | None:
+    """The ``game_no`` of the earliest game that has teammate-place data.
+
+    Uses the collector's game-level ``hasTeammatePlaces`` stamp. Games are ordered
+    by ``started_at`` (falling back to ``game_no``) so "first" means first played,
+    not first alphabetically. Returns ``None`` if no game has the data yet.
+    """
+    if df.empty or "has_teammate_places" not in df.columns:
+        return None
+    games = df[df["has_teammate_places"]].drop_duplicates("game_id")
+    if games.empty:
+        return None
+    games = games.sort_values(["started_at", "game_no"], na_position="last")
+    return games.iloc[0]["game_no"]
+
+
+def teammate_places(df: pd.DataFrame) -> pd.DataFrame:
+    """One row per recorded (recorder, teammate, place) triple.
+
+    Flattens each player's ``teammate_places`` map so teammate finishing places
+    can be analysed directly. Columns: game_id, game_no, player_count, name
+    (the recorder), teammate, place, is_first (place == 1).
+    """
+    rows = []
+    for _, r in df.drop_duplicates(["game_id", "seat"]).iterrows():
+        for teammate, place in (r["teammate_places"] or {}).items():
+            rows.append(
+                {
+                    "game_id": r["game_id"],
+                    "game_no": r["game_no"],
+                    "player_count": r["player_count"],
+                    "name": r["name"],
+                    "teammate": teammate,
+                    "place": place,
+                    "is_first": place == 1,
+                }
+            )
+    return pd.DataFrame(rows)
+
 
 def combo_frequency(df: pd.DataFrame) -> pd.DataFrame:
     """How often each combo type is played, overall and as a share."""
